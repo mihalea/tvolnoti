@@ -55,34 +55,38 @@ G_BEGIN_DECLS
 #endif /* !G_ENABLE_DEBUG */
 
 
-/* BOOLEAN:INT,STRING,STRING,POINTER */
-extern void dbus_glib_marshal_volume_object_BOOLEAN__INT_STRING_STRING_POINTER (GClosure     *closure,
-                                                                                GValue       *return_value,
-                                                                                guint         n_param_values,
-                                                                                const GValue *param_values,
-                                                                                gpointer      invocation_hint,
-                                                                                gpointer      marshal_data);
+/* BOOLEAN:INT,INT,STRING,STRING,STRING,STRING,STRING,POINTER */
+extern void dbus_glib_marshal_volume_object_BOOLEAN__INT_INT_STRING_STRING_STRING_STRING_STRING_POINTER (GClosure     *closure,
+                                                                                                         GValue       *return_value,
+                                                                                                         guint         n_param_values,
+                                                                                                         const GValue *param_values,
+                                                                                                         gpointer      invocation_hint,
+                                                                                                         gpointer      marshal_data);
 void
-dbus_glib_marshal_volume_object_BOOLEAN__INT_STRING_STRING_POINTER (GClosure     *closure,
-                                                                    GValue       *return_value G_GNUC_UNUSED,
-                                                                    guint         n_param_values,
-                                                                    const GValue *param_values,
-                                                                    gpointer      invocation_hint G_GNUC_UNUSED,
-                                                                    gpointer      marshal_data)
+dbus_glib_marshal_volume_object_BOOLEAN__INT_INT_STRING_STRING_STRING_STRING_STRING_POINTER (GClosure     *closure,
+                                                                                             GValue       *return_value G_GNUC_UNUSED,
+                                                                                             guint         n_param_values,
+                                                                                             const GValue *param_values,
+                                                                                             gpointer      invocation_hint G_GNUC_UNUSED,
+                                                                                             gpointer      marshal_data)
 {
-  typedef gboolean (*GMarshalFunc_BOOLEAN__INT_STRING_STRING_POINTER) (gpointer     data1,
-                                                                       gint         arg_1,
-                                                                       gpointer     arg_2,
-                                                                       gpointer     arg_3,
-                                                                       gpointer     arg_4,
-                                                                       gpointer     data2);
-  register GMarshalFunc_BOOLEAN__INT_STRING_STRING_POINTER callback;
+  typedef gboolean (*GMarshalFunc_BOOLEAN__INT_INT_STRING_STRING_STRING_STRING_STRING_POINTER) (gpointer     data1,
+                                                                                                gint         arg_1,
+                                                                                                gint         arg_2,
+                                                                                                gpointer     arg_3,
+                                                                                                gpointer     arg_4,
+                                                                                                gpointer     arg_5,
+                                                                                                gpointer     arg_6,
+                                                                                                gpointer     arg_7,
+                                                                                                gpointer     arg_8,
+                                                                                                gpointer     data2);
+  register GMarshalFunc_BOOLEAN__INT_INT_STRING_STRING_STRING_STRING_STRING_POINTER callback;
   register GCClosure *cc = (GCClosure*) closure;
   register gpointer data1, data2;
   gboolean v_return;
 
   g_return_if_fail (return_value != NULL);
-  g_return_if_fail (n_param_values == 5);
+  g_return_if_fail (n_param_values == 9);
 
   if (G_CCLOSURE_SWAP_DATA (closure))
     {
@@ -94,13 +98,17 @@ dbus_glib_marshal_volume_object_BOOLEAN__INT_STRING_STRING_POINTER (GClosure    
       data1 = g_value_peek_pointer (param_values + 0);
       data2 = closure->data;
     }
-  callback = (GMarshalFunc_BOOLEAN__INT_STRING_STRING_POINTER) (marshal_data ? marshal_data : cc->callback);
+  callback = (GMarshalFunc_BOOLEAN__INT_INT_STRING_STRING_STRING_STRING_STRING_POINTER) (marshal_data ? marshal_data : cc->callback);
 
   v_return = callback (data1,
                        g_marshal_value_peek_int (param_values + 1),
-                       g_marshal_value_peek_string (param_values + 2),
+                       g_marshal_value_peek_int (param_values + 2),
                        g_marshal_value_peek_string (param_values + 3),
-                       g_marshal_value_peek_pointer (param_values + 4),
+                       g_marshal_value_peek_string (param_values + 4),
+                       g_marshal_value_peek_string (param_values + 5),
+                       g_marshal_value_peek_string (param_values + 6),
+                       g_marshal_value_peek_string (param_values + 7),
+                       g_marshal_value_peek_pointer (param_values + 8),
                        data2);
 
   g_value_set_boolean (return_value, v_return);
@@ -112,13 +120,13 @@ G_END_DECLS
 
 #include <dbus/dbus-glib.h>
 static const DBusGMethodInfo dbus_glib_volume_object_methods[] = {
-  { (GCallback) volume_object_notify, dbus_glib_marshal_volume_object_BOOLEAN__INT_STRING_STRING_POINTER, 0 },
+  { (GCallback) volume_object_notify, dbus_glib_marshal_volume_object_BOOLEAN__INT_INT_STRING_STRING_STRING_STRING_STRING_POINTER, 0 },
 };
 
 const DBusGObjectInfo dbus_glib_volume_object_object_info = {  1,
   dbus_glib_volume_object_methods,
   1,
-"uk.ac.cam.db538.VolumeNotification\0notify\0S\0volume\0I\0i\0muteicon\0I\0s\0officon\0I\0s\0\0\0",
+"uk.ac.cam.db538.VolumeNotification\0notify\0S\0volume\0I\0i\0nobar\0I\0i\0muteicon\0I\0s\0officon\0I\0s\0lowicon\0I\0s\0medicon\0I\0s\0highicon\0I\0s\0\0\0",
 "\0",
 "\0"
 };

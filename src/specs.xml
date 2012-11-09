@@ -4,8 +4,12 @@
   <interface name="uk.ac.cam.db538.VolumeNotification">
     <method name="notify">
       <arg type="i" name="volume" direction="in" />
+      <arg type="i" name="nobar" direction="in" />
       <arg type="s" name="muteicon" direction="in" />
       <arg type="s" name="officon" direction="in" />
+      <arg type="s" name="lowicon" direction="in" />
+      <arg type="s" name="medicon" direction="in" />
+      <arg type="s" name="highicon" direction="in" />
     </method>
   </interface>
 </node>

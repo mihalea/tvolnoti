@@ -31,9 +31,13 @@ typedef struct {
     GObject parent;
 
     gint volume;
+    gboolean muted;
+    gint nobar;
     const gchar* muteicon; 
     const gchar* officon; 
-    gboolean muted;
+    const gchar* lowicon; 
+    const gchar* medicon; 
+    const gchar* highicon; 
 
     GtkWindow *notification;
 
@@ -62,8 +66,12 @@ typedef struct {
 GType volume_object_get_type(void);
 gboolean volume_object_notify(VolumeObject* obj,
                               gint value_in,
+                              gint nobar_in,
                               const gchar* muteicon_in,
                               const gchar* officon_in,
+                              const gchar* lowicon_in,
+                              const gchar* medicon_in,
+                              const gchar* highicon_in,
                               GError** error);
 
 #define VOLUME_TYPE_OBJECT \
@@ -120,8 +128,12 @@ time_handler(VolumeObject *obj)
 
 gboolean volume_object_notify(VolumeObject* obj,
                               gint value,
+                              gint nobarvalue,
                               const gchar* muteicon,
                               const gchar* officon,
+                              const gchar* lowicon,
+                              const gchar* medicon,
+                              const gchar* highicon,
                               GError** error) {
     g_assert(obj != NULL);
 
@@ -132,6 +144,15 @@ gboolean volume_object_notify(VolumeObject* obj,
         obj->muted = FALSE;
         obj->volume = (value > 100) ? 100 : value;
     }
+
+    if (nobarvalue == 1) {
+        obj->image_progressbar = gdk_pixbuf_new_from_file(IMAGE_PATH "empty.png", NULL);
+        obj->image_progressbar_empty = gdk_pixbuf_new_from_file(IMAGE_PATH "empty.png", NULL);
+        obj->image_progressbar_full = gdk_pixbuf_new_from_file(IMAGE_PATH "empty.png", NULL);
+    }
+
+
+
 
     if (obj->notification == NULL) {
         print_debug("Creating new notification...", obj->debug);
@@ -147,6 +168,18 @@ gboolean volume_object_notify(VolumeObject* obj,
 
     if (officon && officon[0] != '\0') {
         obj->icon_off = gdk_pixbuf_new_from_file(officon, NULL);
+    }
+
+    if (lowicon && lowicon[0] != '\0') {
+        obj->icon_low = gdk_pixbuf_new_from_file(lowicon, NULL);
+    }
+
+    if (medicon && medicon[0] != '\0') {
+        obj->icon_medium = gdk_pixbuf_new_from_file(medicon, NULL);
+    }
+
+    if (highicon && highicon[0] != '\0') {
+        obj->icon_high = gdk_pixbuf_new_from_file(highicon, NULL);
     }
 
     // choose icon
@@ -171,6 +204,17 @@ gboolean volume_object_notify(VolumeObject* obj,
 
     obj->time_left = obj->timeout;
     gtk_widget_show_all(GTK_WIDGET(obj->notification));
+
+    // reset icons
+    
+    obj->icon_muted = gdk_pixbuf_new_from_file(IMAGE_PATH "volume_muted.svg", NULL);
+    obj->icon_high = gdk_pixbuf_new_from_file(IMAGE_PATH "volume_high.svg", NULL);
+    obj->icon_medium = gdk_pixbuf_new_from_file(IMAGE_PATH "volume_medium.svg", NULL);
+    obj->icon_low = gdk_pixbuf_new_from_file(IMAGE_PATH "volume_low.svg", NULL);
+    obj->icon_off = gdk_pixbuf_new_from_file(IMAGE_PATH "volume_low.svg", NULL);
+    obj->image_progressbar_empty = gdk_pixbuf_new_from_file(IMAGE_PATH "progressbar_empty.png", NULL);
+    obj->image_progressbar_full = gdk_pixbuf_new_from_file(IMAGE_PATH "progressbar_full.png", NULL);
+
 
     return TRUE;
 }
