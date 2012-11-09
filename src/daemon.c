@@ -31,6 +31,8 @@ typedef struct {
     GObject parent;
 
     gint volume;
+    const gchar* muteicon; 
+    const gchar* officon; 
     gboolean muted;
 
     GtkWindow *notification;
@@ -60,6 +62,8 @@ typedef struct {
 GType volume_object_get_type(void);
 gboolean volume_object_notify(VolumeObject* obj,
                               gint value_in,
+                              const gchar* muteicon_in,
+                              const gchar* officon_in,
                               GError** error);
 
 #define VOLUME_TYPE_OBJECT \
@@ -116,6 +120,8 @@ time_handler(VolumeObject *obj)
 
 gboolean volume_object_notify(VolumeObject* obj,
                               gint value,
+                              const gchar* muteicon,
+                              const gchar* officon,
                               GError** error) {
     g_assert(obj != NULL);
 
@@ -133,6 +139,14 @@ gboolean volume_object_notify(VolumeObject* obj,
         gtk_widget_realize(GTK_WIDGET(obj->notification));
         g_timeout_add(1000, (GSourceFunc) time_handler, (gpointer) obj);
         print_debug_ok(obj->debug);
+    }
+
+    if (muteicon && muteicon[0] != '\0') {
+        obj->icon_muted = gdk_pixbuf_new_from_file(muteicon, NULL);
+    }
+
+    if (officon && officon[0] != '\0') {
+        obj->icon_off = gdk_pixbuf_new_from_file(officon, NULL);
     }
 
     // choose icon
