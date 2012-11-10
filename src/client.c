@@ -28,17 +28,21 @@
 #include "value-client-stub.h"
 
 static void print_usage(const char* filename, int failure) {
-    g_print("Usage: %s [-v] [-m] [-0 <file>] [-1 <file>] [-2 <file>] [-3 <file>] [-4 <file>] <volume>\n"
-            " -h\t--help\t\thelp\n"
-            " -v\t--verbose\tverbose\n"
-            " -n\t--nobar\t\tdo not display progress bar\n"
-            " -m\t--mute\t\tmuted\n"
-            " -0\t--mute-icon\tchange mute icon\n"
-            " -1\t--off-icon\tchange off icon\n"
-            " -2\t--low-icon\tchange low icon\n"
-            " -3\t--med-icon\tchange medium icon\n"
-            " -4\t--high-icon\tchange high icon\n"
-            " <volume>\t\tint 0-100\n", filename);
+    g_print("Usage: %s [-hnm] [-0 <image>] [-1 <image>] [-2 <image>] [-3 <image>] [-4 <image>] <value>\n"
+            "  -h\t--help\t\thelp\n"
+            "  -v\t--verbose\tverbose\n"
+            "  -n\t--nobar\t\tdo not display progress bar\n"
+            "  -m\t--mute\t\tmuted\n\n"
+            " Icon options:\n\n"
+            "  -0\t--mute-icon\tchange mute icon\n"
+            "  -1\t--off-icon\tchange off icon\n"
+            "  -2\t--low-icon\tchange low icon\n"
+            "  -3\t--med-icon\tchange medium icon\n"
+            "  -4\t--high-icon\tchange high icon\n\n"
+            "  <value>\t\tint 0-100\n\n"
+            "  If \"-m\" is invoked, <value> is ignored.\n" 
+            "  Icon options can be individually called and expect a full path the the image.\n"
+            "  Volume images will be used if icon images are unspecified\n\n" , filename);
     if (failure)
         exit(EXIT_FAILURE);
     else
