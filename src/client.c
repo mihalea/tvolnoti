@@ -38,7 +38,8 @@ static void print_usage(const char* filename, int failure) {
             "  -1\t--off-icon\tchange off icon\n"
             "  -2\t--low-icon\tchange low icon\n"
             "  -3\t--med-icon\tchange medium icon\n"
-            "  -4\t--high-icon\tchange high icon\n\n"
+            "  -4\t--high-icon\tchange high icon\n"
+            "  -s\t--single-icon\tuse same icon for all values\n\n"
             "  <value>\t\tint 0-100\n\n"
             "  If \"-m\" is invoked, <value> is ignored.\n" 
             "  Icon options can be individually called and expect a full path the the image.\n"
@@ -59,12 +60,14 @@ int main(int argc, const char* argv[]) {
             gopt_option('2', GOPT_ARG, gopt_shorts('2'), gopt_longs("low-icon")),
             gopt_option('3', GOPT_ARG, gopt_shorts('3'), gopt_longs("med-icon")),
             gopt_option('4', GOPT_ARG, gopt_shorts('4'), gopt_longs("high-icon")),
+            gopt_option('s', GOPT_ARG, gopt_shorts('s'), gopt_longs("single-icon")),
             gopt_option('v', GOPT_REPEAT, gopt_shorts('v'), gopt_longs("verbose"))));
     const gchar* muteicon;
     const gchar* officon;
     const gchar* lowicon;
     const gchar* medicon;
     const gchar* highicon;
+    const gchar* singleicon;
     int help = gopt(options, 'h');
     int debug = gopt(options, 'v');
     int muted = gopt(options, 'm');
@@ -74,6 +77,7 @@ int main(int argc, const char* argv[]) {
     int licon = gopt_arg(options, '2', &lowicon);
     int meicon = gopt_arg(options, '3', &medicon);
     int hicon = gopt_arg(options, '4', &highicon);
+    int sicon = gopt_arg(options, 's', &singleicon);
     gopt_free(options);
 
     if (help)
@@ -116,6 +120,10 @@ int main(int argc, const char* argv[]) {
         highicon = NULL;
     }
 
+    if (!sicon) {
+        singleicon = NULL;
+    }
+
     DBusGConnection *bus = NULL;
     DBusGProxy *proxy = NULL;
     GError *error = NULL;
@@ -145,7 +153,7 @@ int main(int argc, const char* argv[]) {
     print_debug_ok(debug);
 
     print_debug("Sending volume...", debug);
-    uk_ac_cam_db538_VolumeNotification_notify(proxy, volume, nobar, muteicon, officon, lowicon, medicon, highicon, &error);
+    uk_ac_cam_db538_VolumeNotification_notify(proxy, volume, nobar, muteicon, officon, lowicon, medicon, highicon, singleicon, &error);
     if (error !=  NULL) {
         handle_error("Failed to send notification", error->message, FALSE);
         g_clear_error(&error);

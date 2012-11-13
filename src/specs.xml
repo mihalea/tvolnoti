@@ -10,6 +10,7 @@
       <arg type="s" name="lowicon" direction="in" />
       <arg type="s" name="medicon" direction="in" />
       <arg type="s" name="highicon" direction="in" />
+      <arg type="s" name="singleicon" direction="in" />
     </method>
   </interface>
 </node>

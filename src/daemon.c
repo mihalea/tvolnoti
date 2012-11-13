@@ -38,6 +38,7 @@ typedef struct {
     const gchar* lowicon; 
     const gchar* medicon; 
     const gchar* highicon; 
+    const gchar* singleicon; 
 
     GtkWindow *notification;
 
@@ -72,6 +73,7 @@ gboolean volume_object_notify(VolumeObject* obj,
                               const gchar* lowicon_in,
                               const gchar* medicon_in,
                               const gchar* highicon_in,
+                              const gchar* singleicon_in,
                               GError** error);
 
 #define VOLUME_TYPE_OBJECT \
@@ -134,6 +136,7 @@ gboolean volume_object_notify(VolumeObject* obj,
                               const gchar* lowicon,
                               const gchar* medicon,
                               const gchar* highicon,
+                              const gchar* singleicon,
                               GError** error) {
     g_assert(obj != NULL);
 
@@ -151,9 +154,6 @@ gboolean volume_object_notify(VolumeObject* obj,
         obj->image_progressbar_full = gdk_pixbuf_new_from_file(IMAGE_PATH "empty.png", NULL);
     }
 
-
-
-
     if (obj->notification == NULL) {
         print_debug("Creating new notification...", obj->debug);
         obj->notification = create_notification(obj->settings);
@@ -162,24 +162,36 @@ gboolean volume_object_notify(VolumeObject* obj,
         print_debug_ok(obj->debug);
     }
 
-    if (muteicon && muteicon[0] != '\0') {
-        obj->icon_muted = gdk_pixbuf_new_from_file(muteicon, NULL);
+    if (singleicon && singleicon[0] != '\0') {
+        obj->icon_muted = gdk_pixbuf_new_from_file(singleicon, NULL);
+        obj->icon_off = gdk_pixbuf_new_from_file(singleicon, NULL);
+        obj->icon_low = gdk_pixbuf_new_from_file(singleicon, NULL);
+        obj->icon_medium = gdk_pixbuf_new_from_file(singleicon, NULL);
+        obj->icon_high = gdk_pixbuf_new_from_file(singleicon, NULL);
     }
 
-    if (officon && officon[0] != '\0') {
-        obj->icon_off = gdk_pixbuf_new_from_file(officon, NULL);
-    }
+    else {
 
-    if (lowicon && lowicon[0] != '\0') {
-        obj->icon_low = gdk_pixbuf_new_from_file(lowicon, NULL);
-    }
+        if (muteicon && muteicon[0] != '\0') {
+            obj->icon_muted = gdk_pixbuf_new_from_file(muteicon, NULL);
+        }
 
-    if (medicon && medicon[0] != '\0') {
-        obj->icon_medium = gdk_pixbuf_new_from_file(medicon, NULL);
-    }
+        if (officon && officon[0] != '\0') {
+            obj->icon_off = gdk_pixbuf_new_from_file(officon, NULL);
+        }
 
-    if (highicon && highicon[0] != '\0') {
-        obj->icon_high = gdk_pixbuf_new_from_file(highicon, NULL);
+        if (lowicon && lowicon[0] != '\0') {
+            obj->icon_low = gdk_pixbuf_new_from_file(lowicon, NULL);
+        }
+
+        if (medicon && medicon[0] != '\0') {
+            obj->icon_medium = gdk_pixbuf_new_from_file(medicon, NULL);
+        }
+
+        if (highicon && highicon[0] != '\0') {
+            obj->icon_high = gdk_pixbuf_new_from_file(highicon, NULL);
+        }
+
     }
 
     // choose icon

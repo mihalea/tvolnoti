@@ -26,10 +26,10 @@ static
 inline
 #endif
 gboolean
-uk_ac_cam_db538_VolumeNotification_notify (DBusGProxy *proxy, const gint IN_volume, const gint IN_nobar, const char * IN_muteicon, const char * IN_officon, const char * IN_lowicon, const char * IN_medicon, const char * IN_highicon, GError **error)
+uk_ac_cam_db538_VolumeNotification_notify (DBusGProxy *proxy, const gint IN_volume, const gint IN_nobar, const char * IN_muteicon, const char * IN_officon, const char * IN_lowicon, const char * IN_medicon, const char * IN_highicon, const char * IN_singleicon, GError **error)
 
 {
-  return dbus_g_proxy_call (proxy, "notify", error, G_TYPE_INT, IN_volume, G_TYPE_INT, IN_nobar, G_TYPE_STRING, IN_muteicon, G_TYPE_STRING, IN_officon, G_TYPE_STRING, IN_lowicon, G_TYPE_STRING, IN_medicon, G_TYPE_STRING, IN_highicon, G_TYPE_INVALID, G_TYPE_INVALID);
+  return dbus_g_proxy_call (proxy, "notify", error, G_TYPE_INT, IN_volume, G_TYPE_INT, IN_nobar, G_TYPE_STRING, IN_muteicon, G_TYPE_STRING, IN_officon, G_TYPE_STRING, IN_lowicon, G_TYPE_STRING, IN_medicon, G_TYPE_STRING, IN_highicon, G_TYPE_STRING, IN_singleicon, G_TYPE_INVALID, G_TYPE_INVALID);
 }
 
 typedef void (*uk_ac_cam_db538_VolumeNotification_notify_reply) (DBusGProxy *proxy, GError *error, gpointer userdata);
@@ -49,14 +49,14 @@ static
 inline
 #endif
 DBusGProxyCall*
-uk_ac_cam_db538_VolumeNotification_notify_async (DBusGProxy *proxy, const gint IN_volume, const gint IN_nobar, const char * IN_muteicon, const char * IN_officon, const char * IN_lowicon, const char * IN_medicon, const char * IN_highicon, uk_ac_cam_db538_VolumeNotification_notify_reply callback, gpointer userdata)
+uk_ac_cam_db538_VolumeNotification_notify_async (DBusGProxy *proxy, const gint IN_volume, const gint IN_nobar, const char * IN_muteicon, const char * IN_officon, const char * IN_lowicon, const char * IN_medicon, const char * IN_highicon, const char * IN_singleicon, uk_ac_cam_db538_VolumeNotification_notify_reply callback, gpointer userdata)
 
 {
   DBusGAsyncData *stuff;
   stuff = g_slice_new (DBusGAsyncData);
   stuff->cb = G_CALLBACK (callback);
   stuff->userdata = userdata;
-  return dbus_g_proxy_begin_call (proxy, "notify", uk_ac_cam_db538_VolumeNotification_notify_async_callback, stuff, _dbus_glib_async_data_free, G_TYPE_INT, IN_volume, G_TYPE_INT, IN_nobar, G_TYPE_STRING, IN_muteicon, G_TYPE_STRING, IN_officon, G_TYPE_STRING, IN_lowicon, G_TYPE_STRING, IN_medicon, G_TYPE_STRING, IN_highicon, G_TYPE_INVALID);
+  return dbus_g_proxy_begin_call (proxy, "notify", uk_ac_cam_db538_VolumeNotification_notify_async_callback, stuff, _dbus_glib_async_data_free, G_TYPE_INT, IN_volume, G_TYPE_INT, IN_nobar, G_TYPE_STRING, IN_muteicon, G_TYPE_STRING, IN_officon, G_TYPE_STRING, IN_lowicon, G_TYPE_STRING, IN_medicon, G_TYPE_STRING, IN_highicon, G_TYPE_STRING, IN_singleicon, G_TYPE_INVALID);
 }
 #endif /* defined DBUS_GLIB_CLIENT_WRAPPERS_uk_ac_cam_db538_VolumeNotification */
 
