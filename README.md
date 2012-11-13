@@ -9,6 +9,8 @@ or XMonad. It is known to work with a wide range of WMs, including
 GNOME, KDE, Xfce, LXDE, XMonad, i3 and many others. The source code
 is heavily based on the GNOME notification-daemon.
 
+This fork adds some additional options to the original volnoti program.
+
 Distribution packages
 ---------------------
 
@@ -105,6 +107,31 @@ parameters of the daemon. To learn more, run:
 All the images are stored in `/usr/share/pixmaps/volnoti` (depending
 on the chosen prefix during configuration phase) and it should be
 easy to replace them with your favourite icons.
+
+New options in this fork
+------------------------
+
+This fork adds additional options to control icons and the ability to hide
+the progress bar. By default, it will use the volume icons.
+
+For example, to display a notification with no progress bar and a custom icon:
+
+    $ volnoti-show -n -m -0 /usr/share/pixmaps/volnoti/media-eject.svg
+
+In general, you would most likely use this along with the `-m` flag as that 
+does not take a value argument, but different icons can be specified.
+
+To control brightness, with different icons for the varying levels:
+
+    $ volnoti-show -1 /usr/share/pixmaps/bright-off.png 
+                   -2 /usr/share/pixmaps/bright-low.svg 
+                   -3 /usr/share/pixmaps/bright-med.svg
+                   -4 /usr/share/pixmaps/bright-high.svg
+                   <value>
+
+There is also the option to use a single icon for all values:
+
+    $ volnoti-show -s /usr/share/pixmaps/volnoti/display-brightness-symbolic.svg <value>
 
 Credits
 -------
