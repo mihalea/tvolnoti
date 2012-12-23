@@ -13,7 +13,7 @@ replaces=()
 backup=()
 # install='foo.install'
 source=("https://github.com/hcchu/volnoti/archive/${pkgver}.tar.gz")
-md5sums=('f1e7a3730528b8808228415990d398f9')
+md5sums=('59e06b27606f31b73b4de740d2145262')
 
 build() {
   cd "${srcdir}/${pkgname}-${pkgver}"
