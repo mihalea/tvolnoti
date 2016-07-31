@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.68])
-AC_INIT([volnoti], [0.2], [])
+AC_INIT([tvolnoti], [0.3], [])
 AC_CONFIG_SRCDIR([src/daemon.c])
 AC_CONFIG_HEADERS([config.h])
 

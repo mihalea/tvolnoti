@@ -11,11 +11,11 @@
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU General Public License for more details.
- * 
+ *
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
- 
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <glib.h>
@@ -41,7 +41,7 @@ static void print_usage(const char* filename, int failure) {
             "  -4\t--high-icon\tchange high icon\n"
             "  -s\t--single-icon\tuse same icon for all values\n\n"
             "  <value>\t\tint 0-100\n\n"
-            "  If \"-m\" is invoked, <value> is ignored.\n" 
+            "  If \"-m\" is invoked, <value> is ignored.\n"
             "  Icon options can be individually called and expect a full path the the image.\n"
             "  Volume images will be used if icon images are unspecified\n\n" , filename);
     if (failure)
@@ -127,9 +127,6 @@ int main(int argc, const char* argv[]) {
     DBusGConnection *bus = NULL;
     DBusGProxy *proxy = NULL;
     GError *error = NULL;
-
-    // initialize GObject
-    g_type_init();
 
     // connect to D-Bus
     print_debug("Connecting to D-Bus...", debug);

@@ -14,11 +14,11 @@
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU General Public License for more details.
- * 
+ *
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
- 
+
 #include "notification.h"
 
 #define USE_COMPOSITE
@@ -26,7 +26,7 @@
 #define WIDTH                   400
 #define DEFAULT_X0              0
 #define DEFAULT_Y0              0
-#define DEFAULT_RADIUS          30
+#define DEFAULT_RADIUS          5
 #define DEFAULT_BORDER          (DEFAULT_RADIUS * 3 / 2)
 
 #define IMAGE_SIZE              110
@@ -52,16 +52,15 @@ typedef struct {
     Settings settings;
 } WindowData;
 
-Settings
-get_default_settings() {
+Settings get_default_settings() {
     Settings settings;
-    settings.alpha = 0.5f;
-    settings.corner_radius = 30;
+    settings.alpha = 0.8f;
+    settings.corner_radius = DEFAULT_RADIUS;
+    settings.color_string = "#bda049";
     return settings;
 }
 
-static void
-color_reverse(const GdkColor *a, GdkColor *b) {
+static void color_reverse(const GdkColor *a, GdkColor *b) {
     gdouble red;
     gdouble green;
     gdouble blue;
@@ -211,10 +210,11 @@ fill_background(GtkWidget *widget, WindowData *windata, cairo_t *cr) {
                      widget->allocation.width - 2,
                      widget->allocation.height - 2);
 
-    color = widget->style->bg [GTK_STATE_NORMAL];
+    gdk_color_parse(windata->settings.color_string, &color);
     r = (float)color.red / 65535.0;
     g = (float)color.green / 65535.0;
     b = (float)color.blue / 65535.0;
+
     cairo_set_source_rgba (cr, r, g, b, windata->settings.alpha);
     cairo_fill_preserve (cr);
 

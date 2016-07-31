@@ -11,21 +11,24 @@
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU General Public License for more details.
- * 
+ *
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
- 
+
 #ifndef NOTIFICATION_H
 #define NOTIFICATION_H
 
 #include <gtk/gtk.h>
+#include <gdk/gdk.h>
+
 #include <cairo.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 
 typedef struct {
     gfloat alpha;
     gint corner_radius;
+    gchar* color_string;
 } Settings;
 
 Settings get_default_settings();
