@@ -12,6 +12,9 @@ is heavily based on the GNOME notification-daemon.
 This fork adds some additional options to the original volnoti program and
 adds theme support
 
+![Example](https://pp.vk.me/c637226/v637226167/2a13/3s0CNGkiFzQ.jpg)
+
+
 Distribution packages
 ---------------------
 
