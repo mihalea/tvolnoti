@@ -23,7 +23,7 @@
 
 #define USE_COMPOSITE
 
-#define WIDTH                   400
+#define WIDTH                   400 /* NOT USED ? */
 #define DEFAULT_X0              0
 #define DEFAULT_Y0              0
 #define DEFAULT_RADIUS          5
@@ -58,6 +58,8 @@ Settings get_default_settings() {
     settings.corner_radius = DEFAULT_RADIUS;
     settings.color_string = "#bda049";
     settings.border = 0;
+    settings.pos_x = -1;
+    settings.pos_y = -1;
     return settings;
 }
 
@@ -205,11 +207,11 @@ fill_background(GtkWidget *widget, WindowData *windata, cairo_t *cr) {
 
     draw_round_rect (cr,
                      1.0f,
-                     DEFAULT_X0 + 1,
-                     DEFAULT_Y0 + 1,
+                     DEFAULT_X0,
+                     DEFAULT_Y0,
                      windata->settings.corner_radius,
-                     widget->allocation.width - 2,
-                     widget->allocation.height - 2);
+                     widget->allocation.width,
+                     widget->allocation.height);
 
     gdk_color_parse(windata->settings.color_string, &color);
     r = (float)color.red / 65535.0;
@@ -459,7 +461,12 @@ GtkWindow* create_notification(Settings settings) {
     gtk_window_set_type_hint(GTK_WINDOW (win),
                              GDK_WINDOW_TYPE_HINT_NOTIFICATION);
     gtk_window_set_default_size(GTK_WINDOW(win), 400, 400);
-    gtk_window_set_position(GTK_WINDOW(win), GTK_WIN_POS_CENTER);
+
+    if(settings.pos_x >= 0 && settings.pos_y >= 0) {
+        gtk_window_move(GTK_WINDOW(win), settings.pos_x, settings.pos_y);
+    } else {
+        gtk_window_set_position(GTK_WINDOW(win), GTK_WIN_POS_CENTER);
+    }
 
     g_object_set_data_full (G_OBJECT (win),
                             "windata", windata,

@@ -30,6 +30,8 @@ typedef struct {
     gint corner_radius;
     gchar* color_string;
     gint border;
+    gint pos_x;
+    gint pos_y;
 } Settings;
 
 Settings get_default_settings();

@@ -285,6 +285,7 @@ static void print_usage(const char* filename, int failure) {
                 " -t <int>\t--timeout <int>\t\tnotification timeout in seconds\n"
                 " -a <float>\t--alpha <float>\t\ttransparency level (0.0 - 1.0, default %.2f)\n"
                 " -b <int>\t--border <int>\t\tborder size in pixels\n"
+                " -p <int>,<int>\t--pos <int>,<int>\t\thorizontal and vertical position\n"
                 " -r <int>\t--corner-radius <int>\tradius of the round corners in pixels (default %d)\n"
                 " -T <string>\t--theme <string>\ttheme name\n"
                 , filename, settings.alpha, settings.corner_radius);
@@ -326,6 +327,7 @@ int main(int argc, char* argv[]) {
                                           gopt_option('t', GOPT_ARG, gopt_shorts('t'), gopt_longs("timeout")),
                                           gopt_option('a', GOPT_ARG, gopt_shorts('a'), gopt_longs("alpha")),
                                           gopt_option('b', GOPT_ARG, gopt_shorts('b'), gopt_longs("border")),
+                                          gopt_option('p', GOPT_ARG, gopt_shorts('p'), gopt_longs("pos")),
                                           gopt_option('r', GOPT_ARG, gopt_shorts('r'), gopt_longs("corner-radius")),
                                           gopt_option('T', GOPT_ARG, gopt_shorts('T'), gopt_longs("theme")),
                                           gopt_option('v', GOPT_REPEAT, gopt_shorts('v'), gopt_longs("verbose"))));
@@ -351,6 +353,12 @@ int main(int argc, char* argv[]) {
                 }
         }
 
+        if (gopt(options, 'p')) {
+                if(sscanf(gopt_arg_i(options, 'p', 0), "%d,%d", &settings.pos_x, &settings.pos_y) != 2 || settings.pos_x < 0 || settings.pos_y < 0) {
+                        print_usage(argv[0], TRUE);
+                }
+        }
+
         if (gopt(options, 'r')) {
                 if (sscanf(gopt_arg_i(options, 'r', 0), "%d", &settings.corner_radius) != 1)
                         print_usage(argv[0], TRUE);
@@ -359,7 +367,7 @@ int main(int argc, char* argv[]) {
         // theme
         if(gopt_arg( options, 'T', &themename )) {
                 GKeyFile* gkf; /* Notice we declared a pointer */
-                int locTimeOut = 0;
+                gint locTimeOut = 0;
 
                 gchar* bg_color;
                 gchar* hi;
@@ -370,11 +378,14 @@ int main(int argc, char* argv[]) {
                 gchar* em;
                 gchar* fu;
 
-                char* theme_dir = getenv("HOME");
+                gchar* theme_dir = getenv("HOME");
 
-                int corner_radius;
-                int border;
+                gint corner_radius;
+                gint border;
                 gdouble alpha;
+                gint pos_x;
+                gint pos_y;
+
 
                 strcat(theme_dir, "/.config/volnoti/themes/");
                 strcat(theme_dir, themename);
@@ -391,7 +402,7 @@ int main(int argc, char* argv[]) {
 
                 gkf = g_key_file_new();
 
-                char* conffile = concat(theme_dir, "theme.conf");
+                gchar* conffile = concat(theme_dir, "theme.conf");
 
                 if (!g_key_file_load_from_file(gkf, conffile, G_KEY_FILE_NONE, NULL)) {
                         fprintf (stderr, "Could not read config file %s\n", conffile);
@@ -414,6 +425,14 @@ int main(int argc, char* argv[]) {
 
                 if(border = g_key_file_get_integer(gkf, "Style", "border", NULL)) {
                         settings.border = border;
+                }
+
+                if(pos_x = g_key_file_get_integer(gkf, "Style", "posx", NULL)) {
+                        settings.pos_x = pos_x;
+                }
+
+                if(pos_y = g_key_file_get_integer(gkf, "Style", "posy", NULL)) {
+                        settings.pos_y = pos_y;
                 }
 
                 if(alpha = (float)g_key_file_get_double(gkf, "Style", "alpha", NULL)) {
