@@ -5,12 +5,14 @@
     <method name="notify">
       <arg type="i" name="volume" direction="in" />
       <arg type="i" name="nobar" direction="in" />
+      <arg type="i" name="bright" direction="in" />
       <arg type="s" name="muteicon" direction="in" />
       <arg type="s" name="officon" direction="in" />
       <arg type="s" name="lowicon" direction="in" />
       <arg type="s" name="medicon" direction="in" />
       <arg type="s" name="highicon" direction="in" />
       <arg type="s" name="singleicon" direction="in" />
+      <arg type="s" name="brighticon" direction="in" />
     </method>
   </interface>
 </node>
