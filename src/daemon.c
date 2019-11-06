@@ -100,8 +100,8 @@ G_DEFINE_TYPE(VolumeObject, volume_object, G_TYPE_OBJECT)
 
 #include "value-daemon-stub.h"
 
-char * i_high;
-char * i_medium;
+char * i_high = IMAGE_PATH "volume_high_dark.svg";
+char * i_medium = IMAGE_PATH "volume_medium_dark.svg";
 char * i_low = IMAGE_PATH "volume_low_dark.svg";
 char * i_off = IMAGE_PATH "volume_off_dark.svg";
 char * i_muted = IMAGE_PATH "volume_muted_dark.svg";
