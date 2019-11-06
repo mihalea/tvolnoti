@@ -284,6 +284,7 @@ static void print_usage(const char* filename, int failure) {
                 "Configuration:\n"
                 " -t <int>\t--timeout <int>\t\tnotification timeout in seconds\n"
                 " -a <float>\t--alpha <float>\t\ttransparency level (0.0 - 1.0, default %.2f)\n"
+                " -b <int>\t--border <int>\t\tborder size in pixels\n"
                 " -r <int>\t--corner-radius <int>\tradius of the round corners in pixels (default %d)\n"
                 " -T <string>\t--theme <string>\ttheme name\n"
                 , filename, settings.alpha, settings.corner_radius);
@@ -324,6 +325,7 @@ int main(int argc, char* argv[]) {
                                           gopt_option('n', 0, gopt_shorts('n'), gopt_longs("no-daemon")),
                                           gopt_option('t', GOPT_ARG, gopt_shorts('t'), gopt_longs("timeout")),
                                           gopt_option('a', GOPT_ARG, gopt_shorts('a'), gopt_longs("alpha")),
+                                          gopt_option('b', GOPT_ARG, gopt_shorts('b'), gopt_longs("border")),
                                           gopt_option('r', GOPT_ARG, gopt_shorts('r'), gopt_longs("corner-radius")),
                                           gopt_option('T', GOPT_ARG, gopt_shorts('T'), gopt_longs("theme")),
                                           gopt_option('v', GOPT_REPEAT, gopt_shorts('v'), gopt_longs("verbose"))));
@@ -341,6 +343,12 @@ int main(int argc, char* argv[]) {
         if (gopt(options, 'a')) {
                 if (sscanf(gopt_arg_i(options, 'a', 0), "%f", &settings.alpha) != 1 || settings.alpha < 0.0f || settings.alpha > 1.0f)
                         print_usage(argv[0], TRUE);
+        }
+
+        if (gopt(options, 'b')) {
+                if(sscanf(gopt_arg_i(options, 'b', 0), "%d", &settings.border) != 1 || settings.border <= 0) {
+                        print_usage(argv[0], TRUE);
+                }
         }
 
         if (gopt(options, 'r')) {
@@ -365,6 +373,7 @@ int main(int argc, char* argv[]) {
                 char* theme_dir = getenv("HOME");
 
                 int corner_radius;
+                int border;
                 gdouble alpha;
 
                 strcat(theme_dir, "/.config/volnoti/themes/");
@@ -401,6 +410,10 @@ int main(int argc, char* argv[]) {
 
                 if(corner_radius = g_key_file_get_integer(gkf, "Style", "corner_radius", NULL)) {
                         settings.corner_radius = corner_radius;
+                }
+
+                if(border = g_key_file_get_integer(gkf, "Style", "border", NULL)) {
+                        settings.border = border;
                 }
 
                 if(alpha = (float)g_key_file_get_double(gkf, "Style", "alpha", NULL)) {

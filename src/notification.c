@@ -57,6 +57,7 @@ Settings get_default_settings() {
     settings.alpha = 0.8f;
     settings.corner_radius = DEFAULT_RADIUS;
     settings.color_string = "#bda049";
+    settings.border = 0;
     return settings;
 }
 
@@ -218,14 +219,14 @@ fill_background(GtkWidget *widget, WindowData *windata, cairo_t *cr) {
     cairo_set_source_rgba (cr, r, g, b, windata->settings.alpha);
     cairo_fill_preserve (cr);
 
-    // border
-//  color = widget->style->text_aa [GTK_STATE_NORMAL];
-//  r = (float) color.red / 65535.0;
-//  g = (float) color.green / 65535.0;
-//  b = (float) color.blue / 65535.0;
-//  cairo_set_source_rgba (cr, r, g, b, BACKGROUND_ALPHA / 2);
-//  cairo_set_line_width (cr, 1);
-//  cairo_stroke (cr);
+    if (windata->settings.border) {
+        r = (float) color.red / 65535.0;
+        g = (float) color.green / 65535.0;
+        b = (float) color.blue / 65535.0;
+        cairo_set_source_rgba (cr, 0, 0, 0, windata->settings.alpha);
+        cairo_set_line_width (cr, windata->settings.border);
+        cairo_stroke (cr);
+    }
 }
 
 static void
