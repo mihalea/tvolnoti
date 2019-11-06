@@ -33,12 +33,14 @@ typedef struct {
 
         gint volume;
         gboolean muted;
+        gboolean brightness;
         gint nobar;
         const gchar* muteicon;
         const gchar* officon;
         const gchar* lowicon;
         const gchar* medicon;
         const gchar* highicon;
+        const gchar* brighticon;
         const gchar* singleicon;
 
         GtkWindow *notification;
@@ -48,6 +50,7 @@ typedef struct {
         GdkPixbuf *icon_low;
         GdkPixbuf *icon_off;
         GdkPixbuf *icon_muted;
+        GdkPixbuf *icon_bright;
 
         GdkPixbuf *image_progressbar_empty;
         GdkPixbuf *image_progressbar_full;
@@ -70,12 +73,14 @@ GType volume_object_get_type(void);
 gboolean volume_object_notify(VolumeObject* obj,
                               gint value_in,
                               gint nobar_in,
+                              gint brightness_in,
                               const gchar* muteicon_in,
                               const gchar* officon_in,
                               const gchar* lowicon_in,
                               const gchar* medicon_in,
                               const gchar* highicon_in,
                               const gchar* singleicon_in,
+                              const gchar* brighticon_in,
                               GError** error);
 
 #define VOLUME_TYPE_OBJECT \
@@ -105,6 +110,8 @@ char * i_medium = IMAGE_PATH "volume_medium_dark.svg";
 char * i_low = IMAGE_PATH "volume_low_dark.svg";
 char * i_off = IMAGE_PATH "volume_off_dark.svg";
 char * i_muted = IMAGE_PATH "volume_muted_dark.svg";
+
+char * i_brightness = IMAGE_PATH "display-brightness-dark.svg";
 
 char * pb_empty = IMAGE_PATH "progressbar_empty_dark.svg";
 char * pb_full = IMAGE_PATH "progressbar_full_dark.svg";
@@ -172,12 +179,14 @@ static gboolean time_handler(VolumeObject *obj)
 gboolean volume_object_notify(VolumeObject* obj,
                               gint value,
                               gint nobarvalue,
+                              gint brightness,
                               const gchar* muteicon,
                               const gchar* officon,
                               const gchar* lowicon,
                               const gchar* medicon,
                               const gchar* highicon,
                               const gchar* singleicon,
+                              const gchar* brighticon,
                               GError** error) {
         g_assert(obj != NULL);
 
@@ -188,6 +197,8 @@ gboolean volume_object_notify(VolumeObject* obj,
                 obj->muted = FALSE;
                 obj->volume = (value > 100) ? 100 : value;
         }
+
+        obj->brightness = brightness;
 
         if (nobarvalue == 1) {
                 obj->image_progressbar = gdk_pixbuf_new_from_file(IMAGE_PATH "empty.png", NULL);
@@ -203,6 +214,9 @@ gboolean volume_object_notify(VolumeObject* obj,
                 print_debug_ok(obj->debug);
         }
 
+        if(brighticon && brighticon[0] != '\0') {
+                obj->icon_bright = gdk_pixbuf_new_from_file(brighticon, NULL);
+        }
         if (singleicon && singleicon[0] != '\0') {
                 obj->icon_muted = gdk_pixbuf_new_from_file(singleicon, NULL);
                 obj->icon_off = gdk_pixbuf_new_from_file(singleicon, NULL);
@@ -234,7 +248,9 @@ gboolean volume_object_notify(VolumeObject* obj,
         }
 
         // choose icon
-        if (obj->muted)
+        if (obj->brightness)
+                set_notification_icon(GTK_WINDOW(obj->notification), obj->icon_bright);
+        else if (obj->muted)
                 set_notification_icon(GTK_WINDOW(obj->notification), obj->icon_muted);
         else if (obj->volume >= 75)
                 set_notification_icon(GTK_WINDOW(obj->notification), obj->icon_high);
@@ -262,6 +278,7 @@ gboolean volume_object_notify(VolumeObject* obj,
         obj->icon_medium = gdk_pixbuf_new_from_file(i_medium, NULL);
         obj->icon_low = gdk_pixbuf_new_from_file(i_low, NULL);
         obj->icon_off = gdk_pixbuf_new_from_file(i_off, NULL);
+        obj->icon_bright = gdk_pixbuf_new_from_file(i_brightness, NULL);
         obj->image_progressbar_empty = gdk_pixbuf_new_from_file(pb_empty, NULL);
         obj->image_progressbar_full = gdk_pixbuf_new_from_file(pb_full, NULL);
 
@@ -377,6 +394,7 @@ int main(int argc, char* argv[]) {
                 gchar* mu;
                 gchar* em;
                 gchar* fu;
+                gchar* br;
 
                 gchar* theme_dir = getenv("HOME");
 
@@ -462,6 +480,10 @@ int main(int argc, char* argv[]) {
 
                 if(mu = g_key_file_get_string(gkf, "Icons", "muted", NULL)) {
                         i_muted = concat(theme_dir, mu);
+                }
+
+                if(br = g_key_file_get_string(gkf, "Icons", "brightness", NULL)) {
+                        i_brightness = concat(theme_dir, br);
                 }
 
                 if(em = g_key_file_get_string(gkf, "ProgressBar", "progressbar_empty", NULL)) {
@@ -569,6 +591,10 @@ int main(int argc, char* argv[]) {
         status->icon_muted = gdk_pixbuf_new_from_file(i_muted, &error);
         if (error != NULL)
                 handle_error("Couldn't load volume_muted_dark.svg.", error->message, TRUE);
+
+        status->icon_bright = gdk_pixbuf_new_from_file(i_brightness, &error);
+        if (error != NULL)
+                handle_error("Couldn't load display-brightness-dark.svg", error->message, TRUE);
 
         // progress bar
         status->image_progressbar_empty = gdk_pixbuf_new_from_file(pb_empty, &error);
