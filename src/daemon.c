@@ -390,14 +390,15 @@ int main(int argc, char* argv[]) {
                 gint locTimeOut = 0;
 
                 gchar* bg_color;
-                gchar* hi;
-                gchar* lo;
-                gchar* me;
-                gchar* off;
-                gchar* mu;
-                gchar* em;
-                gchar* fu;
-                gchar* br;
+                gchar* hi; // high icon
+                gchar* lo; // low icon
+                gchar* me; // medium icon
+                gchar* off; // off icon
+                gchar* mu; // mute icon
+                gchar* em; // empty progressbar
+                gchar* fu; // full progressbar
+                gchar* br; // brightnes
+                gchar* hz; // horizontal
 
                 gchar* theme_dir = getenv("HOME");
 
@@ -458,6 +459,14 @@ int main(int argc, char* argv[]) {
 
                 if(alpha = (float)g_key_file_get_double(gkf, "Style", "alpha", NULL)) {
                         settings.alpha = alpha;
+                }
+
+                if(hz = g_key_file_get_string(gkf, "Style", "horizontal", NULL)) {
+                        if (strcmp(hz, "TRUE") == 0) {
+                                settings.horizontal = TRUE;
+                        } else if (strcmp(hz, "FALSE") == 0) {
+                                settings.horizontal = FALSE;
+                        }
                 }
 
                 // icons
