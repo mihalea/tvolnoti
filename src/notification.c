@@ -33,6 +33,7 @@
 #define IMAGE_PADDING           (IMAGE_SIZE / 3)
 #define BODY_X_OFFSET           (IMAGE_SIZE + 8)
 #define MAX_ICON_SIZE           IMAGE_SIZE
+#define SMALL_ICON_SIZE         (IMAGE_SIZE / 3)
 #define MAX_PROGRESSBAR_SIZE    (IMAGE_SIZE * 18 / 10)
 
 typedef struct {
@@ -477,7 +478,11 @@ GtkWindow* create_notification(Settings settings) {
                       G_CALLBACK (on_configure_event),
                       windata);
 
+    if (settings.horizontal) {
+        windata->main_vbox = gtk_hbox_new(FALSE, 0);
+    } else {
     windata->main_vbox = gtk_vbox_new(FALSE, 0);
+    }
     g_signal_connect(G_OBJECT(windata->main_vbox),
                      "style-set",
                      G_CALLBACK(on_style_set),
@@ -493,14 +498,18 @@ GtkWindow* create_notification(Settings settings) {
 //                        FALSE, FALSE, 0);
 
     // icon box
-    windata->iconbox = gtk_alignment_new (0.5f, 0, 0, 0);
+    windata->iconbox = gtk_alignment_new (0.5f, 0.5f, 0, 0);
     gtk_widget_show (windata->iconbox);
-    gtk_alignment_set_padding (GTK_ALIGNMENT (windata->iconbox),
-                               0, IMAGE_PADDING, 0, 0);
+
+    if(settings.horizontal) {
+        gtk_alignment_set_padding (GTK_ALIGNMENT (windata->iconbox), 0, 0, 0, 0);
+    } else {
+        gtk_alignment_set_padding (GTK_ALIGNMENT (windata->iconbox), 0, IMAGE_PADDING, 0, 0);
+    }
     gtk_box_pack_start (GTK_BOX (windata->main_vbox),
                         windata->iconbox,
                         FALSE, FALSE, 0);
-    gtk_widget_set_size_request (windata->iconbox, BODY_X_OFFSET, -1);
+    // gtk_widget_set_size_request (windata->iconbox, SMALL_ICON_SIZE + 8, -1);
 
     // icon
     windata->icon = gtk_image_new ();
@@ -508,14 +517,14 @@ GtkWindow* create_notification(Settings settings) {
     gtk_container_add (GTK_CONTAINER (windata->iconbox), windata->icon);
 
     // progress bar box
-    windata->progressbarbox = gtk_alignment_new (0.5f, 0, 0, 0);
+    windata->progressbarbox = gtk_alignment_new (0.5f, 0.5f, 0, 0);
     gtk_widget_show (windata->progressbarbox);
 //    gtk_alignment_set_padding (GTK_ALIGNMENT (windata->iconbox),
 //                               5, 0, 0, 0);
     gtk_box_pack_start (GTK_BOX (windata->main_vbox),
                         windata->progressbarbox,
                         FALSE, FALSE, 0);
-    gtk_widget_set_size_request (windata->progressbarbox, BODY_X_OFFSET, -1);
+    // gtk_widget_set_size_request (windata->progressbarbox, BODY_X_OFFSET, -1);
 
     // progress bar
     windata->progressbar = gtk_image_new ();
@@ -547,24 +556,26 @@ set_notification_icon (GtkWindow *nw, GdkPixbuf *pixbuf) {
         scaled = NULL;
         if (pixbuf != NULL) {
                 scaled = scale_pixbuf (pixbuf,
-                                       MAX_ICON_SIZE,
-                                       MAX_ICON_SIZE,
+                                       windata->settings.horizontal ? SMALL_ICON_SIZE : MAX_ICON_SIZE,
+                                       windata->settings.horizontal ? SMALL_ICON_SIZE : MAX_ICON_SIZE,
                                        TRUE);
         }
 
         gtk_image_set_from_pixbuf (GTK_IMAGE (windata->icon), scaled);
+
+        const icon_width = windata->settings.horizontal ? SMALL_ICON_SIZE + 8 : MAX_ICON_SIZE + 8;
 
         if (scaled != NULL) {
                 int pixbuf_width = gdk_pixbuf_get_width (scaled);
 
                 gtk_widget_show (windata->icon);
                 gtk_widget_set_size_request (windata->iconbox,
-                                             MAX (BODY_X_OFFSET, pixbuf_width), -1);
+                                             MAX (icon_width, pixbuf_width), -1);
                 g_object_unref (scaled);
         } else {
                 gtk_widget_hide (windata->icon);
                 gtk_widget_set_size_request (windata->iconbox,
-                                             BODY_X_OFFSET,
+                                             icon_width,
                                              -1);
         }
 }

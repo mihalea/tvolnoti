@@ -341,6 +341,7 @@ int main(int argc, char* argv[]) {
         void *options = gopt_sort(&argc, (const char**) argv, gopt_start(
                                           gopt_option('h', 0, gopt_shorts('h', '?'), gopt_longs("help", "HELP")),
                                           gopt_option('n', 0, gopt_shorts('n'), gopt_longs("no-daemon")),
+                                          gopt_option('z', 0, gopt_shorts('z'), gopt_longs("horizontal")),
                                           gopt_option('t', GOPT_ARG, gopt_shorts('t'), gopt_longs("timeout")),
                                           gopt_option('a', GOPT_ARG, gopt_shorts('a'), gopt_longs("alpha")),
                                           gopt_option('b', GOPT_ARG, gopt_shorts('b'), gopt_longs("border")),
@@ -352,7 +353,9 @@ int main(int argc, char* argv[]) {
         int help = gopt(options, 'h');
         int debug = gopt(options, 'v');
         int no_daemon = gopt(options, 'n');
+        int horizontal = gopt(options, 'z');
         const char* themename;
+        settings.horizontal = horizontal;
 
         if (gopt(options, 't')) {
                 if (sscanf(gopt_arg_i(options, 't', 0), "%d", &timeout) != 1)
