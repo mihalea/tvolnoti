@@ -6,7 +6,7 @@ AC_INIT([tvolnoti], [0.1], [mircea@mihalea.ro])
 AC_CONFIG_SRCDIR([src/daemon.c])
 AC_CONFIG_HEADERS([config.h])
 
-AM_INIT_AUTOMAKE([1.10 -Wall no-define])
+AM_INIT_AUTOMAKE([1.10 -Wall no-define foreign])
 # AC_CONFIG_FILES([Makefile])
 
 # Checks for programs.
