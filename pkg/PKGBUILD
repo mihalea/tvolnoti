@@ -1,7 +1,8 @@
 # Maintainer: Mircea Mihalea <mircea at mihalea dot ro>
 # Contributor: David Brazdil <db538@cam.ac.uk>
+
 pkgname=tvolnoti
-pkgver=0.1
+pkgver=@VERRSION@
 pkgrel=1
 pkgdesc="Lightweight volume notification"
 url="https://www.github.com/mihalea/tvolnoti"
@@ -9,9 +10,8 @@ arch=('x86_64' 'i686')
 license=('GPL')
 depends=('dbus' 'dbus-glib' 'gtk2' 'gdk-pixbuf2')
 makedepends=('gcc' 'make' 'pkg-config')
-provides=("volnoti")
 source=("${pkgname}-${pkgver}.tar.gz")
-md5sums=('63735f5efcb56ca38cdac3f70cffd1f9')
+md5sums=('@MD5@')
 
 build() {
   cd "${srcdir}/${pkgname}-${pkgver}"
