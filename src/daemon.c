@@ -409,7 +409,7 @@ int main(int argc, char* argv[]) {
                 gint pos_y;
 
 
-                strcat(theme_dir, "/.config/volnoti/themes/");
+                strcat(theme_dir, "/.config/tvolnoti/themes/");
                 strcat(theme_dir, themename);
                 strcat(theme_dir,"/");
 

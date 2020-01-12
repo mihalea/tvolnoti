@@ -1,2 +1,2 @@
-SUBDIRS = src res
+SUBDIRS = src res/default res/themes
 EXTRA_DIST = README.md INSTALL COPYING AUTHORS NEWS ChangeLog

@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.68])
-AC_INIT([tvolnoti], [0.3], [])
+AC_INIT([tvolnoti], [0.1], [mircea@mihalea.ro])
 AC_CONFIG_SRCDIR([src/daemon.c])
 AC_CONFIG_HEADERS([config.h])
 
@@ -34,5 +34,6 @@ AC_CHECK_FUNCS([strchr strcspn])
 AC_OUTPUT([
   Makefile
   src/Makefile
-  res/Makefile
+  res/default/Makefile
+  res/themes/Makefile
 ])

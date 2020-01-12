@@ -14,19 +14,19 @@ AM_CPPFLAGS = \
 
 COMMON = common.c common.h gopt.c gopt.h
 
-bin_PROGRAMS = volnoti volnoti-show
+bin_PROGRAMS = tvolnoti tvolnoti-show
 
-volnoti_SOURCES = daemon.c notification.c notification.h \
+tvolnoti_SOURCES = daemon.c notification.c notification.h \
                   value-daemon-stub.h $(COMMON)
-volnoti_LDADD = \
+tvolnoti_LDADD = \
                 @DBUS_LIBS@ \
                 @DBUS_GLIB_LIBS@ \
                 @GTK_LIBS@ \
                 @CAIRO_LIBS@ \
                 @GDK_PIXBUF_LIBS@
 
-volnoti_show_SOURCES = client.c value-client-stub.h $(COMMON)
-volnoti_show_LDADD = \
+tvolnoti_show_SOURCES = client.c value-client-stub.h $(COMMON)
+tvolnoti_show_LDADD = \
                      @DBUS_LIBS@ \
                      @DBUS_GLIB_LIBS@
 

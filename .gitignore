@@ -124,8 +124,10 @@ Makefile
 /config.h
 /src/.deps
 
-/src/volnoti
-/src/volnoti-show
+/src/tvolnoti
+/src/tvolnoti-show
 /src/value-*-stub.h
 
 # End of https://www.gitignore.io/api/autotools
+
+.directory

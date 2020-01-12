@@ -1,19 +1,17 @@
-# Maintainer: David Brazdil <db538@cam.ac.uk>
-pkgname=volnoti
-pkgver=0.3
-pkgrel=3
+# Maintainer: Mircea Mihalea <mircea at mihalea dot ro>
+# Contributor: David Brazdil <db538@cam.ac.uk>
+pkgname=tvolnoti
+pkgver=0.1
+pkgrel=1
 pkgdesc="Lightweight volume notification"
-url="https://www.github.com/hcchu/volnoti"
+url="https://www.github.com/mihalea/tvolnoti"
 arch=('x86_64' 'i686')
-license=('GPLv3')
-depends=('dbus-core' 'dbus-glib' 'gtk2' 'gdk-pixbuf2')
+license=('GPL')
+depends=('dbus' 'dbus-glib' 'gtk2' 'gdk-pixbuf2')
 makedepends=('gcc' 'make' 'pkg-config')
-conflicts=()
-replaces=()
-backup=()
-# install='foo.install'
+provides=("volnoti")
 source=("${pkgname}-${pkgver}.tar.gz")
-md5sums=('23f080ed463c6547b92f85165fb5fcef')
+md5sums=('63735f5efcb56ca38cdac3f70cffd1f9')
 
 build() {
   cd "${srcdir}/${pkgname}-${pkgver}"
