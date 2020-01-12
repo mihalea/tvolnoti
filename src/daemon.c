@@ -201,9 +201,11 @@ gboolean volume_object_notify(VolumeObject* obj,
         obj->brightness = brightness;
 
         if (nobarvalue == 1) {
+                print_debug("Disablingg progress bar...", obj->debug);
                 obj->image_progressbar = gdk_pixbuf_new_from_file(IMAGE_PATH "empty.png", NULL);
                 obj->image_progressbar_empty = gdk_pixbuf_new_from_file(IMAGE_PATH "empty.png", NULL);
                 obj->image_progressbar_full = gdk_pixbuf_new_from_file(IMAGE_PATH "empty.png", NULL);
+                print_debug_ok(obj->debug);
         }
 
         if (obj->notification == NULL) {
@@ -262,12 +264,20 @@ gboolean volume_object_notify(VolumeObject* obj,
                 set_notification_icon(GTK_WINDOW(obj->notification), obj->icon_off);
 
         // prepare and set progress bar
-        gint width_full = obj->width_progressbar * obj->volume / 100;
-        gdk_pixbuf_copy_area(obj->image_progressbar_full, 0, 0, width_full, obj->height_progressbar,
-                             obj->image_progressbar, 0, 0);
-        gdk_pixbuf_copy_area(obj->image_progressbar_empty, width_full, 0, obj->width_progressbar - width_full, obj->height_progressbar,
-                             obj->image_progressbar, width_full, 0);
-        set_progressbar_image(GTK_WINDOW(obj->notification), obj->image_progressbar);
+
+
+        if (obj->nobar != 0) {
+                print_debug("Composing progress bar...", obj->debug);  
+                gint width_full = obj->width_progressbar * obj->volume / 100;
+                gdk_pixbuf_copy_area(obj->image_progressbar_full, 0, 0, width_full, obj->height_progressbar,
+                                obj->image_progressbar, 0, 0);
+                gdk_pixbuf_copy_area(obj->image_progressbar_empty, width_full, 0, obj->width_progressbar - width_full, obj->height_progressbar,
+                                obj->image_progressbar, width_full, 0);
+                set_progressbar_image(GTK_WINDOW(obj->notification), obj->image_progressbar);
+                print_debug_ok(obj->debug);
+        } else {
+                obj->image_progressbar = NULL;
+        }
 
         obj->time_left = obj->timeout;
         gtk_widget_show_all(GTK_WIDGET(obj->notification));
