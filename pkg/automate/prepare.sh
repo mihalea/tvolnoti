@@ -3,19 +3,30 @@
 # Exit immediately if a command exits with a non-zero status.
 set -e
 
-key_name=$(cat pkg/encrypted)
 
-# Decrypt private key
+echo "Decrypting and permissioning the deployment key..."
+key_name=$(cat pkg/encrypted)
 echo "Using key ${key_name}"
 key="${key_name}_key"
 iv="${key_name}_iv"
+# Decrypt private key
 openssl aes-256-cbc -K ${!key} -iv ${!iv}  -in pkg/private_key.enc -out /tmp/private_key -d
 chmod 600 /tmp/private_key
-echo "Decrypted and permissioned the deployment key"
+
+
+echo  "Installing zstd..."
+wget https://github.com/facebook/zstd/archive/master.zip -O zstd.zip
+unzip zstd.zip
+cd zstd-master
+make
 
 # Set up to run makepkg
-wget https://www.archlinux.org/packages/core/x86_64/pacman/download/ -O pacman.pkg.tar.xz
-tar -Jxf pacman.pkg.tar.xz
+wget https://www.archlinux.org/packages/core/x86_64/pacman/download/ -O pacman.pkg.tar.zst
+echo "Downloaded pacman package"
+
+tar --use-compress-program "$(pwd)/zstd-master/zstd" -xf pacman.pkg.tar.zst
+echo "Decompressed pacman"
+
 export MAKEPKG_DIR="$(pwd)/usr/bin"
 export PATH="$MAKEPKG_DIR:$PATH"
 export LIBRARY="$(pwd)/usr/share/makepkg"
