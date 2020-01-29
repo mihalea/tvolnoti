@@ -17,19 +17,11 @@ travis_fold end decrypt
 
 
 # FOLD START
-travis_fold start zstd "Compiling and installing zstd"
-wget https://github.com/facebook/zstd/archive/master.zip -O zstd.zip
-unzip zstd.zip
-make -C zstd-master
-travis_fold end zstd
-# FOLD END
-
-# FOLD START
 travis_fold start pacman "Set up to run makepkg"
-wget https://www.archlinux.org/packages/core/x86_64/pacman/download/ -O pacman.pkg.tar.zst
+wget -nv https://www.archlinux.org/packages/core/x86_64/pacman/download/ -O pacman.pkg.tar.zst
 echo "Downloaded pacman package"
 
-tar --use-compress-program "$(pwd)/zstd-master/zstd" -xf pacman.pkg.tar.zst
+tar --use-compress-program zstd -xf pacman.pkg.tar.zst
 echo "Decompressed pacman"
 
 export MAKEPKG_DIR="$(pwd)/usr/bin"
@@ -56,7 +48,7 @@ git config --global --add core.sshCommand "ssh -o StrictHostKeyChecking=false -i
 
 export AUR_NAME=tvolnoti
 
-execute package.sh
+bash ./package.sh
 MD5=$(md5sum tvolnoti-*.tar.gz)
 export MD5
 
