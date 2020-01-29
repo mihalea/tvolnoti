@@ -6,7 +6,10 @@ set -e
 key_name=$(cat pkg/encrypted)
 
 # Decrypt private key
-openssl aes-256-cbc -K "${key_name}_key" -iv "${key_name}_iv" -in pkg/private_key.enc -out /tmp/private_key -d
+echo "Using key ${key_name}"
+key="${key_name}_key"
+iv="${key_name}_iv"
+openssl aes-256-cbc -K ${!key} -iv ${!iv}  -in pkg/private_key.enc -out /tmp/private_key -d
 chmod 600 /tmp/private_key
 echo "Decrypted and permissioned the deployment key"
 
