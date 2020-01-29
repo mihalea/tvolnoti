@@ -1,6 +1,6 @@
 stages:
   - name: check configuration
-    if: branch = travis
+    if: branch IN (travis, master)
   - name: deploy
     if: tag =~ /^v[0-9]+\.[0-9]+\.[0-9]+$/
 
