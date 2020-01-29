@@ -481,7 +481,7 @@ GtkWindow* create_notification(Settings settings) {
     if (settings.horizontal) {
         windata->main_vbox = gtk_hbox_new(FALSE, 0);
     } else {
-    windata->main_vbox = gtk_vbox_new(FALSE, 0);
+        windata->main_vbox = gtk_vbox_new(FALSE, 0);
     }
     g_signal_connect(G_OBJECT(windata->main_vbox),
                      "style-set",
@@ -516,11 +516,12 @@ GtkWindow* create_notification(Settings settings) {
     gtk_widget_show (windata->icon);
     gtk_container_add (GTK_CONTAINER (windata->iconbox), windata->icon);
 
+
     // progress bar box
     windata->progressbarbox = gtk_alignment_new (0.5f, 0.5f, 0, 0);
     gtk_widget_show (windata->progressbarbox);
-//    gtk_alignment_set_padding (GTK_ALIGNMENT (windata->iconbox),
-//                               5, 0, 0, 0);
+    //gtk_alignment_set_padding (GTK_ALIGNMENT (windata->iconbox),
+    //                               5, 0, 0, 0);
     gtk_box_pack_start (GTK_BOX (windata->main_vbox),
                         windata->progressbarbox,
                         FALSE, FALSE, 0);
