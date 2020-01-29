@@ -48,18 +48,20 @@ git config --global --add core.sshCommand "ssh -o StrictHostKeyChecking=false -i
 
 export AUR_NAME=tvolnoti
 
+# FOLD START
 travis_fold start package "Packaging source code"
 bash ./package.sh
 travis_fold end package
+# FOLD END
 
-MD5=$(md5sum tvolnoti-*.tar.gz)
+MD5=$(md5sum tvolnoti-*.tar.gz | cut -d" " -f1)
 export MD5
 echo "MD5=${MD5}"
 
-pkg_version=$(find . -iname "tvolnoti-*\.tar\.gz" | grep -oP "\d.\d.\d")
-if [[ ${LATEST_TAG:1} -ne $pkg_version ]]; then
+pkg_version=$(find . -iname "tvolnoti-*\.tar\.gz" | grep -oP "\d.\d.\d" || true)
+if [[ -z "$pkg_version" ]] || [[ "${LATEST_TAG:1}" != "$pkg_version" ]]; then
     echo "Compiled package version does not match tag version!"
     echo "Compiled version: ${pkg_version}"
-    echo "Expected version: ${VERSION}"
+    echo "Expected version: ${LATEST_TAG}"
     exit 1
 fi
