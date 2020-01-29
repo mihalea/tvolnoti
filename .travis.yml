@@ -6,7 +6,7 @@ stages:
 
 before_install:
   - sudo apt-get update
-  - sudo apt-get -y install zstd
+  - sudo apt-get -y install zstd libdbus-glib-1-dev
 
 jobs:
   include:
