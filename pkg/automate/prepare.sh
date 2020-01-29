@@ -1,10 +1,10 @@
 #!/bin/bash
 
-# Exit immediately if a command exits with a non-zero status.
-set -e
+source pkg/automate/common.sh
 
 
-echo "Decrypting and permissioning the deployment key..."
+# FOLD START
+travis_fold start decrypt "Decrypting and permissioning the deployment key"
 key_name=$(cat pkg/encrypted)
 echo "Using key ${key_name}"
 key="${key_name}_key"
@@ -12,15 +12,20 @@ iv="${key_name}_iv"
 # Decrypt private key
 openssl aes-256-cbc -K ${!key} -iv ${!iv}  -in pkg/private_key.enc -out /tmp/private_key -d
 chmod 600 /tmp/private_key
+travis_fold end decrypt
+# FOLD END
 
 
-echo  "Installing zstd..."
+# FOLD START
+travis_fold start zstd "Compiling and installing zstd"
 wget https://github.com/facebook/zstd/archive/master.zip -O zstd.zip
 unzip zstd.zip
-cd zstd-master
-make
+make -C zstd-master
+travis_fold end zstd
+# FOLD END
 
-# Set up to run makepkg
+# FOLD START
+travis_fold start pacman "Set up to run makepkg"
 wget https://www.archlinux.org/packages/core/x86_64/pacman/download/ -O pacman.pkg.tar.zst
 echo "Downloaded pacman package"
 
@@ -32,6 +37,8 @@ export PATH="$MAKEPKG_DIR:$PATH"
 export LIBRARY="$(pwd)/usr/share/makepkg"
 export MAKEPKG_CONF="$(pwd)/etc/makepkg.conf"
 echo "Installed makepkg"
+travis_fold end pacman
+#FOLD END
 
 # Package version 
 LATEST_TAG=$(git describe --long | sed -rn 's/^(.*)-.*-.*$/\1/p')
