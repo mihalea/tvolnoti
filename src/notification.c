@@ -58,10 +58,12 @@ Settings get_default_settings() {
     settings.alpha = 0.8f;
     settings.corner_radius = DEFAULT_RADIUS;
     settings.color_string = "#bda049";
-    settings.border = 0;
+    settings.border = DEFAULT_BORDER;
+    settings.border_color = "#bda049";
     settings.pos_x = -1;
     settings.pos_y = -1;
     settings.center = 0;
+    settings.blur = 0; // user it later
     return settings;
 }
 
@@ -224,10 +226,12 @@ fill_background(GtkWidget *widget, WindowData *windata, cairo_t *cr) {
     cairo_fill_preserve (cr);
 
     if (windata->settings.border) {
-        r = (float) color.red / 65535.0;
-        g = (float) color.green / 65535.0;
-        b = (float) color.blue / 65535.0;
-        cairo_set_source_rgba (cr, 0, 0, 0, windata->settings.alpha);
+        GdkColor color1;
+        gdk_color_parse(windata->settings.border_color, &color1);
+        double r1 = (float)color1.red / 65535.0;
+        double g1 = (float)color1.green / 65535.0;
+        double b1 = (float)color1.blue / 65535.0;
+        cairo_set_source_rgba (cr, r1, g1, b1, 0);
         cairo_set_line_width (cr, windata->settings.border);
         cairo_stroke (cr);
     }
@@ -484,7 +488,7 @@ GtkWindow* create_notification(Settings settings) {
                      windata);
     gtk_widget_show(windata->main_vbox);
     gtk_container_add(GTK_CONTAINER(win), windata->main_vbox);
-    gtk_container_set_border_width(GTK_CONTAINER(windata->main_vbox), DEFAULT_BORDER);
+    gtk_container_set_border_width(GTK_CONTAINER(windata->main_vbox), settings.border);
 
 //    windata->main_hbox = gtk_hbox_new (FALSE, 0);
 //    gtk_widget_show (windata->main_hbox);
@@ -527,7 +531,7 @@ GtkWindow* create_notification(Settings settings) {
     gtk_widget_show (windata->progressbar);
     gtk_container_add (GTK_CONTAINER (windata->progressbarbox), windata->progressbar);
     
-    if(settings.pos_x >= 0 && settings.pos_y >= 0) {
+    if(settings.pos_x > 0 || settings.pos_y > 0) {
         if (settings.center){
             GdkWindow *root;
             gint rwidth, rheight, depth, width, height;

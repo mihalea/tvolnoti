@@ -546,6 +546,7 @@ void set_settings(Settings* settings, gchar* theme_dir, int* timeout) {
         gint locTimeOut = 0;
 
         gchar* bg_color;
+        gchar* border_color;
         gchar* hi; // high icon
         gchar* lo; // low icon
         gchar* me; // medium icon
@@ -560,6 +561,7 @@ void set_settings(Settings* settings, gchar* theme_dir, int* timeout) {
         gint border;
         gint center;
         gdouble alpha;
+        gdouble blur;
         gint pos_x;
         gint pos_y;
         DIR* dir = opendir(theme_dir);
@@ -571,7 +573,12 @@ void set_settings(Settings* settings, gchar* theme_dir, int* timeout) {
                 conffile = concat(theme_dir, "theme.conf");
         }
         else if(access(theme_dir, F_OK) == 0){
-                conffile = theme_dir;
+                conffile = concat(theme_dir,"");
+                char *pos = strrchr(theme_dir, '/');
+                if (pos != NULL) {
+                        *pos = '\0';
+                }
+                theme_dir = concat(theme_dir,"/");
         }
          else {
                 fprintf (stderr, "Could not find theme directory %s\n", theme_dir);
@@ -580,8 +587,7 @@ void set_settings(Settings* settings, gchar* theme_dir, int* timeout) {
 
         gkf = g_key_file_new();
 
-
-        if (!g_key_file_load_from_file(gkf, conffile, G_KEY_FILE_NONE, NULL)) { // somewhy fails to load
+        if (!g_key_file_load_from_file(gkf, conffile, G_KEY_FILE_NONE, NULL)) {
                 fprintf (stderr, "Could not read config file %s\n", conffile);
                 return EXIT_FAILURE;
         }
@@ -603,7 +609,11 @@ void set_settings(Settings* settings, gchar* theme_dir, int* timeout) {
         if(border = g_key_file_get_integer(gkf, "Style", "border", NULL)) {
                 settings->border = border;
         }
-        
+
+        if(border_color = g_key_file_get_string(gkf, "Style", "border_color", NULL)) {
+                settings->border_color = border_color;
+        }
+
         if(center = g_key_file_get_integer(gkf, "Style", "center", NULL)) {
                 settings->center = center;
         } 
@@ -618,6 +628,10 @@ void set_settings(Settings* settings, gchar* theme_dir, int* timeout) {
 
         if(alpha = (float)g_key_file_get_double(gkf, "Style", "alpha", NULL)) {
                 settings->alpha = alpha;
+        }
+
+        if(blur = (float)g_key_file_get_double(gkf, "Style", "blur", NULL)) {
+                settings->blur = blur;
         }
 
         if(hz = g_key_file_get_string(gkf, "Style", "horizontal", NULL)) {
