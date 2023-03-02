@@ -5,7 +5,7 @@
 
 ![tvolnoti-preview](img/montage.png)
 
-Compared to the original volnoti, this fork adds some additional features such as theme support.
+Compared to the original tvolnoti, this fork adds some additional features such as theme support.
 
 
 ## Distribution packages
@@ -108,7 +108,7 @@ Configuration:
 Once the daemon is running, you can run for example the following command to show a notification for volume level 25%
 
 ```
-$ volnoti-show 25
+$ tvolnoti-show 25
 ```
 ```
 Usage: tvolnoti-show [OPTION]... value
@@ -179,7 +179,7 @@ Using a horizontal layout is possible by making use of theme files, and setting 
 For example, to display a notification with no progress bar and a custom icon. In general, you would most likely use this along with the `-m` flag as that does not take a value argument, but different icons can be specified.
 
 ```
-$ volnoti-show -n -m -0 /usr/share/pixmaps/volnoti/media-eject.svg
+$ tvolnoti-show -n -m -0 /usr/share/pixmaps/volnoti/media-eject.svg
 ```
 
 
@@ -187,7 +187,7 @@ $ volnoti-show -n -m -0 /usr/share/pixmaps/volnoti/media-eject.svg
 To control brightness, with different icons for the varying levels:
 
 ```
-$ volnoti-show -1 /usr/share/pixmaps/bright-off.png
+$ tvolnoti-show -1 /usr/share/pixmaps/bright-off.png
                 -2 /usr/share/pixmaps/bright-low.svg
                 -3 /usr/share/pixmaps/bright-med.svg
                 -4 /usr/share/pixmaps/bright-high.svg
@@ -197,7 +197,7 @@ $ volnoti-show -1 /usr/share/pixmaps/bright-off.png
 There is also the option to use a single icon for all values:
 
 ```
-$ volnoti-show -s /usr/share/pixmaps/volnoti/display-brightness-dark.svg <value>
+$ tvolnoti-show -s /usr/share/pixmaps/volnoti/display-brightness-dark.svg <value>
 ```
 
 
