@@ -558,6 +558,7 @@ void set_settings(Settings* settings, gchar* theme_dir, int* timeout) {
 
         gint corner_radius;
         gint border;
+        gint center;
         gdouble alpha;
         gint pos_x;
         gint pos_y;
@@ -602,7 +603,11 @@ void set_settings(Settings* settings, gchar* theme_dir, int* timeout) {
         if(border = g_key_file_get_integer(gkf, "Style", "border", NULL)) {
                 settings->border = border;
         }
-
+        
+        if(center = g_key_file_get_integer(gkf, "Style", "center", NULL)) {
+                settings->center = center;
+        } 
+        
         if(pos_x = g_key_file_get_integer(gkf, "Style", "posx", NULL)) {
                 settings->pos_x = pos_x;
         }

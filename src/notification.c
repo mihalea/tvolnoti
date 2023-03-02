@@ -61,6 +61,7 @@ Settings get_default_settings() {
     settings.border = 0;
     settings.pos_x = -1;
     settings.pos_y = -1;
+    settings.center = 0;
     return settings;
 }
 
@@ -463,12 +464,6 @@ GtkWindow* create_notification(Settings settings) {
                              GDK_WINDOW_TYPE_HINT_NOTIFICATION);
     gtk_window_set_default_size(GTK_WINDOW(win), 400, 400);
 
-    if(settings.pos_x >= 0 && settings.pos_y >= 0) {
-        gtk_window_move(GTK_WINDOW(win), settings.pos_x, settings.pos_y);
-    } else {
-        gtk_window_set_position(GTK_WINDOW(win), GTK_WIN_POS_CENTER);
-    }
-
     g_object_set_data_full (G_OBJECT (win),
                             "windata", windata,
                             (GDestroyNotify)destroy_windata);
@@ -531,6 +526,22 @@ GtkWindow* create_notification(Settings settings) {
     windata->progressbar = gtk_image_new ();
     gtk_widget_show (windata->progressbar);
     gtk_container_add (GTK_CONTAINER (windata->progressbarbox), windata->progressbar);
+    
+    if(settings.pos_x >= 0 && settings.pos_y >= 0) {
+        if (settings.center){
+            GdkWindow *root;
+            gint rwidth, rheight, depth, width, height;
+
+            gtk_window_get_size (win, &width, &height);
+            root = gtk_widget_get_root_window (GTK_WIDGET (win));
+            gdk_window_get_geometry (root, NULL, NULL, &rwidth, &rheight, &depth);
+            gtk_window_move (win, (rwidth - width)/2 - settings.border + settings.pos_x, (rheight - height)/2 - settings.border + settings.pos_y - 20);
+        } else {
+            gtk_window_move(GTK_WINDOW(win), settings.pos_x, settings.pos_y);
+        }
+    } else {
+        gtk_window_set_position(GTK_WINDOW(win), GTK_WIN_POS_CENTER);
+    }
 
     return GTK_WINDOW(win);
 }

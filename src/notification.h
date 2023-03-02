@@ -33,6 +33,7 @@ typedef struct {
     gint pos_x;
     gint pos_y;
     gint horizontal;
+    gint center;
 } Settings;
 
 Settings get_default_settings();
