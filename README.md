@@ -51,10 +51,26 @@ $ ./prepare.sh
 
 Then just follow the basic GNU routine:
 
+
 ```
 $ ./configure --prefix=/usr
 $ make
 $ sudo make install
+```
+
+If you get an error:
+
+```
+daemon.c:106:10: fatal error: value-daemon-stub.h: No such file or directory
+  106 | #include "value-daemon-stub.h"
+```
+
+then enter these commands:
+
+```
+cd src
+dbus-binding-tool --prefix=volume_object --mode=glib-client       specs.xml > value-client-stub.h
+dbus-binding-tool --prefix=volume_object --mode=glib-server       specs.xml > value-server-stub.h
 ```
 
 You can have the `.tar.gz` source archive prepared simply by calling

@@ -347,6 +347,7 @@ int main(int argc, char* argv[]) {
                                           gopt_option('p', GOPT_ARG, gopt_shorts('p'), gopt_longs("pos")),
                                           gopt_option('r', GOPT_ARG, gopt_shorts('r'), gopt_longs("corner-radius")),
                                           gopt_option('T', GOPT_ARG, gopt_shorts('T'), gopt_longs("theme")),
+                                          gopt_option('c', GOPT_ARG, gopt_shorts('c'), gopt_longs("config")),
                                           gopt_option('v', GOPT_REPEAT, gopt_shorts('v'), gopt_longs("verbose"))));
 
         int help = gopt(options, 'h');
@@ -354,6 +355,7 @@ int main(int argc, char* argv[]) {
         int no_daemon = gopt(options, 'n');
         int horizontal = gopt(options, 'z');
         const char* themename;
+        const char* configdir;
         settings.horizontal = horizontal;
 
         if (gopt(options, 't')) {
@@ -385,130 +387,20 @@ int main(int argc, char* argv[]) {
 
         // theme
         if(gopt_arg( options, 'T', &themename )) {
-                GKeyFile* gkf; /* Notice we declared a pointer */
-                gint locTimeOut = 0;
-
-                gchar* bg_color;
-                gchar* hi; // high icon
-                gchar* lo; // low icon
-                gchar* me; // medium icon
-                gchar* off; // off icon
-                gchar* mu; // mute icon
-                gchar* em; // empty progressbar
-                gchar* fu; // full progressbar
-                gchar* br; // brightnes
-                gchar* hz; // horizontal
-
                 gchar* theme_dir = getenv("HOME");
-
-                gint corner_radius;
-                gint border;
-                gdouble alpha;
-                gint pos_x;
-                gint pos_y;
-
-
-                strcat(theme_dir, "/.config/tvolnoti/themes/");
+                strcat(theme_dir, "/.config/tvolnoti/themes/"); 
                 strcat(theme_dir, themename);
                 strcat(theme_dir,"/");
-
-                DIR* dir = opendir(theme_dir);
-
-                if (dir) {
-                        closedir(dir);
-                } else {
-                        fprintf (stderr, "Could not find theme directory %s\n", theme_dir);
-                        return EXIT_FAILURE;
-                }
-
-                gkf = g_key_file_new();
-
-                gchar* conffile = concat(theme_dir, "theme.conf");
-
-                if (!g_key_file_load_from_file(gkf, conffile, G_KEY_FILE_NONE, NULL)) {
-                        fprintf (stderr, "Could not read config file %s\n", conffile);
-                        return EXIT_FAILURE;
-                }
-
-                free(conffile);
-
-                if(locTimeOut = g_key_file_get_integer(gkf, "General", "timeout", NULL)) {
-                        timeout = locTimeOut;
-                }
-
-                if(bg_color = g_key_file_get_string(gkf, "Style", "bg_color", NULL)) {
-                        settings.color_string = bg_color;
-                }
-
-                if(corner_radius = g_key_file_get_integer(gkf, "Style", "corner_radius", NULL)) {
-                        settings.corner_radius = corner_radius;
-                }
-
-                if(border = g_key_file_get_integer(gkf, "Style", "border", NULL)) {
-                        settings.border = border;
-                }
-
-                if(pos_x = g_key_file_get_integer(gkf, "Style", "posx", NULL)) {
-                        settings.pos_x = pos_x;
-                }
-
-                if(pos_y = g_key_file_get_integer(gkf, "Style", "posy", NULL)) {
-                        settings.pos_y = pos_y;
-                }
-
-                if(alpha = (float)g_key_file_get_double(gkf, "Style", "alpha", NULL)) {
-                        settings.alpha = alpha;
-                }
-
-                if(hz = g_key_file_get_string(gkf, "Style", "horizontal", NULL)) {
-                        if (strcmp(hz, "TRUE") == 0) {
-                                settings.horizontal = TRUE;
-                        } else if (strcmp(hz, "FALSE") == 0) {
-                                settings.horizontal = FALSE;
-                        }
-                }
-
-                // icons
-                if(hi = g_key_file_get_string(gkf, "Icons", "high", NULL)) {
-                        i_high = concat(theme_dir, hi);
-                }
-
-                if(me = g_key_file_get_string(gkf, "Icons", "medium", NULL)) {
-                        i_medium = concat(theme_dir, me);
-                }
-
-                if(lo = g_key_file_get_string(gkf, "Icons", "low", NULL)) {
-                        i_low = concat(theme_dir, lo);
-                }
-
-                if(off = g_key_file_get_string(gkf, "Icons", "off", NULL)) {
-                        i_off = concat(theme_dir, off);
-                }
-
-                if(mu = g_key_file_get_string(gkf, "Icons", "muted", NULL)) {
-                        i_muted = concat(theme_dir, mu);
-                }
-
-                if(br = g_key_file_get_string(gkf, "Icons", "brightness", NULL)) {
-                        i_brightness = concat(theme_dir, br);
-                }
-
-                if(em = g_key_file_get_string(gkf, "ProgressBar", "progressbar_empty", NULL)) {
-                        pb_empty = concat(theme_dir, em);
-                }
-
-                if(fu = g_key_file_get_string(gkf, "ProgressBar", "progressbar_full", NULL)) {
-                        pb_full = concat(theme_dir, fu);
-                }
-
-                /*
-                 * Do what you want to do...
-                 * Don't forget to free before you leave.
-                 */
-
-                g_key_file_free (gkf);
+                set_settings(&settings, theme_dir, &timeout);
         }
 
+        if(gopt_arg( options, 'c', &configdir )) {
+                gchar* config_dir = getenv("HOME");
+                if (strstr(configdir, "$HOME") != NULL) {
+                    configdir = concat(config_dir, configdir+5);
+                }
+                set_settings(&settings, configdir, &timeout);
+        }
         gopt_free(options);
 
         if (help)
@@ -647,4 +539,127 @@ int main(int argc, char* argv[]) {
         print_debug("Running the main loop...\n", debug);
         g_main_loop_run(main_loop);
         return EXIT_FAILURE;
+}
+
+void set_settings(Settings* settings, gchar* theme_dir, int* timeout) {
+        GKeyFile* gkf; /* Notice we declared a pointer */
+        gint locTimeOut = 0;
+
+        gchar* bg_color;
+        gchar* hi; // high icon
+        gchar* lo; // low icon
+        gchar* me; // medium icon
+        gchar* off; // off icon
+        gchar* mu; // mute icon
+        gchar* em; // empty progressbar
+        gchar* fu; // full progressbar
+        gchar* br; // brightnes
+        gchar* hz; // horizontal
+
+        gint corner_radius;
+        gint border;
+        gdouble alpha;
+        gint pos_x;
+        gint pos_y;
+        DIR* dir = opendir(theme_dir);
+
+// check if theme_dir is a directory else check if it is a file
+        gchar* conffile;
+        if (dir) {
+                closedir(dir);
+                conffile = concat(theme_dir, "theme.conf");
+        }
+        else if(access(theme_dir, F_OK) == 0){
+                conffile = theme_dir;
+        }
+         else {
+                fprintf (stderr, "Could not find theme directory %s\n", theme_dir);
+                return EXIT_FAILURE;
+        }
+
+        gkf = g_key_file_new();
+
+
+        if (!g_key_file_load_from_file(gkf, conffile, G_KEY_FILE_NONE, NULL)) { // somewhy fails to load
+                fprintf (stderr, "Could not read config file %s\n", conffile);
+                return EXIT_FAILURE;
+        }
+
+        free(conffile);
+
+        if(locTimeOut = g_key_file_get_integer(gkf, "General", "timeout", NULL)) {
+                *timeout = locTimeOut;
+        }
+
+        if(bg_color = g_key_file_get_string(gkf, "Style", "bg_color", NULL)) {
+                settings->color_string = bg_color;
+        }
+
+        if(corner_radius = g_key_file_get_integer(gkf, "Style", "corner_radius", NULL)) {
+                settings->corner_radius = corner_radius;
+        }
+
+        if(border = g_key_file_get_integer(gkf, "Style", "border", NULL)) {
+                settings->border = border;
+        }
+
+        if(pos_x = g_key_file_get_integer(gkf, "Style", "posx", NULL)) {
+                settings->pos_x = pos_x;
+        }
+
+        if(pos_y = g_key_file_get_integer(gkf, "Style", "posy", NULL)) {
+                settings->pos_y = pos_y;
+        }
+
+        if(alpha = (float)g_key_file_get_double(gkf, "Style", "alpha", NULL)) {
+                settings->alpha = alpha;
+        }
+
+        if(hz = g_key_file_get_string(gkf, "Style", "horizontal", NULL)) {
+                if (strcmp(hz, "TRUE") == 0) {
+                        settings->horizontal = TRUE;
+                } else if (strcmp(hz, "FALSE") == 0) {
+                        settings->horizontal = FALSE;
+                }
+        }
+
+        // icons
+        if(hi = g_key_file_get_string(gkf, "Icons", "high", NULL)) {
+                i_high = concat(theme_dir, hi);
+        }
+
+        if(me = g_key_file_get_string(gkf, "Icons", "medium", NULL)) {
+                i_medium = concat(theme_dir, me);
+        }
+
+        if(lo = g_key_file_get_string(gkf, "Icons", "low", NULL)) {
+                i_low = concat(theme_dir, lo);
+        }
+
+        if(off = g_key_file_get_string(gkf, "Icons", "off", NULL)) {
+                i_off = concat(theme_dir, off);
+        }
+
+        if(mu = g_key_file_get_string(gkf, "Icons", "muted", NULL)) {
+                i_muted = concat(theme_dir, mu);
+        }
+
+        if(br = g_key_file_get_string(gkf, "Icons", "brightness", NULL)) {
+                i_brightness = concat(theme_dir, br);
+        }
+
+        if(em = g_key_file_get_string(gkf, "ProgressBar", "progressbar_empty", NULL)) {
+                pb_empty = concat(theme_dir, em);
+        }
+
+        if(fu = g_key_file_get_string(gkf, "ProgressBar", "progressbar_full", NULL)) {
+                pb_full = concat(theme_dir, fu);
+        }
+
+        /*
+                * Do what you want to do...
+                * Don't forget to free before you leave.
+                */
+
+        g_key_file_free (gkf);
 }
