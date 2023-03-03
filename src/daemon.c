@@ -304,7 +304,7 @@ static void print_usage(const char* filename, int failure) {
                 " -p <int>,<int>\t--pos <int>,<int>\t\thorizontal and vertical position\n"
                 " -r <int>\t--corner-radius <int>\tradius of the round corners in pixels (default %d)\n"
                 " -T <string>\t--theme <string>\ttheme name\n"
-                " -c <path>\t--config <path>\t\tpath to the configutation file\n"
+                " -c <path>\t--config <path>\t\tpath to the configuration file\n"
                 , filename, settings.alpha, settings.corner_radius);
         if (failure)
                 exit(EXIT_FAILURE);

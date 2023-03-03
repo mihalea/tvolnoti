@@ -119,7 +119,7 @@ Configuration:
  -p <int>,<int>	--pos <int>,<int>		horizontal and vertical position
  -r <int>	    --corner-radius <int>   radius of the round corners in pixels (default 5)
  -T <string>	--theme <string>	    theme name
- -c <path>      --config <path>         path to the configutation file
+ -c <path>      --config <path>         path to the configuration file
 
 ```
 
