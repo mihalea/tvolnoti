@@ -408,6 +408,23 @@ on_window_map (GtkWidget  *widget, GdkEvent   *event, WindowData *windata) {
     return FALSE;
 }
 
+void on_size_allocate(GtkWidget *widget, GtkAllocation *allocation, WindowData *windata) {
+    Settings settings = windata->settings;
+    if(settings.pos_x > 0 || settings.pos_y > 0) {
+        if (settings.center){
+            GdkWindow *root;
+            gint rwidth, rheight, depth;
+            root = gtk_widget_get_root_window (GTK_WIDGET (windata->win));
+            gdk_window_get_geometry (root, NULL, NULL, &rwidth, &rheight, &depth);
+            gtk_window_move (windata->win, (rwidth - allocation->width)/2 + settings.pos_x, (rheight - allocation->height)/2 + settings.pos_y);
+        } else {
+            gtk_window_move(GTK_WINDOW(windata->win), settings.pos_x, settings.pos_y);
+        }
+    } else {
+        gtk_window_set_position(GTK_WINDOW(windata->win), GTK_WIN_POS_CENTER);
+    }
+}
+
 GtkWindow* create_notification(Settings settings) {
     WindowData *windata;
 
@@ -446,6 +463,10 @@ GtkWindow* create_notification(Settings settings) {
                       G_CALLBACK (on_window_realize),
                       windata);
 
+    g_signal_connect(G_OBJECT(win),
+                     "size-allocate",
+                      G_CALLBACK(on_size_allocate),
+                      windata);
     // prepare composite
     windata->composited = FALSE;
 #ifdef USE_COMPOSITE
@@ -530,22 +551,6 @@ GtkWindow* create_notification(Settings settings) {
     windata->progressbar = gtk_image_new ();
     gtk_widget_show (windata->progressbar);
     gtk_container_add (GTK_CONTAINER (windata->progressbarbox), windata->progressbar);
-    
-    if(settings.pos_x > 0 || settings.pos_y > 0) {
-        if (settings.center){
-            GdkWindow *root;
-            gint rwidth, rheight, depth, width, height;
-
-            gtk_window_get_size (win, &width, &height);
-            root = gtk_widget_get_root_window (GTK_WIDGET (win));
-            gdk_window_get_geometry (root, NULL, NULL, &rwidth, &rheight, &depth);
-            gtk_window_move (win, (rwidth - width)/2 - settings.border + settings.pos_x, (rheight - height)/2 - settings.border + settings.pos_y - 20);
-        } else {
-            gtk_window_move(GTK_WINDOW(win), settings.pos_x, settings.pos_y);
-        }
-    } else {
-        gtk_window_set_position(GTK_WINDOW(win), GTK_WIN_POS_CENTER);
-    }
 
     return GTK_WINDOW(win);
 }
