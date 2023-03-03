@@ -304,6 +304,7 @@ static void print_usage(const char* filename, int failure) {
                 " -p <int>,<int>\t--pos <int>,<int>\t\thorizontal and vertical position\n"
                 " -r <int>\t--corner-radius <int>\tradius of the round corners in pixels (default %d)\n"
                 " -T <string>\t--theme <string>\ttheme name\n"
+                " -c <path>\t--config <path>\t\tpath to the configutation file\n"
                 , filename, settings.alpha, settings.corner_radius);
         if (failure)
                 exit(EXIT_FAILURE);
@@ -397,7 +398,7 @@ int main(int argc, char* argv[]) {
         if(gopt_arg( options, 'c', &configdir )) {
                 gchar* config_dir = getenv("HOME");
                 if (strstr(configdir, "$HOME") != NULL) {
-                    configdir = concat(config_dir, configdir+5);
+                    configdir = concat(config_dir, configdir + 5);
                 }
                 set_settings(&settings, configdir, &timeout);
         }
@@ -561,18 +562,16 @@ void set_settings(Settings* settings, gchar* theme_dir, int* timeout) {
         gint border;
         gint center;
         gdouble alpha;
-        gdouble blur;
         gint pos_x;
         gint pos_y;
         DIR* dir = opendir(theme_dir);
 
-// check if theme_dir is a directory else check if it is a file
         gchar* conffile;
         if (dir) {
                 closedir(dir);
                 conffile = concat(theme_dir, "theme.conf");
         }
-        else if(access(theme_dir, F_OK) == 0){
+        else if(access(theme_dir, F_OK) == 0) {
                 conffile = concat(theme_dir,"");
                 char *pos = strrchr(theme_dir, '/');
                 if (pos != NULL) {
@@ -628,10 +627,6 @@ void set_settings(Settings* settings, gchar* theme_dir, int* timeout) {
 
         if(alpha = (float)g_key_file_get_double(gkf, "Style", "alpha", NULL)) {
                 settings->alpha = alpha;
-        }
-
-        if(blur = (float)g_key_file_get_double(gkf, "Style", "blur", NULL)) {
-                settings->blur = blur;
         }
 
         if(hz = g_key_file_get_string(gkf, "Style", "horizontal", NULL)) {

@@ -63,7 +63,6 @@ Settings get_default_settings() {
     settings.pos_x = -1;
     settings.pos_y = -1;
     settings.center = 0;
-    settings.blur = 0; // user it later
     return settings;
 }
 
@@ -228,10 +227,10 @@ fill_background(GtkWidget *widget, WindowData *windata, cairo_t *cr) {
     if (windata->settings.border) {
         GdkColor color1;
         gdk_color_parse(windata->settings.border_color, &color1);
-        double r1 = (float)color1.red / 65535.0;
-        double g1 = (float)color1.green / 65535.0;
-        double b1 = (float)color1.blue / 65535.0;
-        cairo_set_source_rgba (cr, r1, g1, b1, 0);
+        r = (float)color1.red / 65535.0;
+        g = (float)color1.green / 65535.0;
+        b = (float)color1.blue / 65535.0;
+        cairo_set_source_rgba (cr, r, g, b, 0);
         cairo_set_line_width (cr, windata->settings.border);
         cairo_stroke (cr);
     }
@@ -412,9 +411,8 @@ void on_size_allocate(GtkWidget *widget, GtkAllocation *allocation, WindowData *
     Settings settings = windata->settings;
     if(settings.pos_x > 0 || settings.pos_y > 0) {
         if (settings.center){
-            GdkWindow *root;
             gint rwidth, rheight, depth;
-            root = gtk_widget_get_root_window (GTK_WIDGET (windata->win));
+            GdkWindow *root = gtk_widget_get_root_window (GTK_WIDGET (windata->win));
             gdk_window_get_geometry (root, NULL, NULL, &rwidth, &rheight, &depth);
             gtk_window_move (windata->win, (rwidth - allocation->width)/2 + settings.pos_x, (rheight - allocation->height)/2 + settings.pos_y);
         } else {

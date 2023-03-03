@@ -119,6 +119,8 @@ Configuration:
  -p <int>,<int>	--pos <int>,<int>		horizontal and vertical position
  -r <int>	    --corner-radius <int>   radius of the round corners in pixels (default 5)
  -T <string>	--theme <string>	    theme name
+ -c <path>      --config <path>         path to the configutation file
+
 ```
 
 Once the daemon is running, you can run for example the following command to show a notification for volume level 25%
@@ -171,8 +173,9 @@ Theme should be placed in `~/.config/tvolnoti/themes`. Each theme should have it
   * bg_color (hex color) = color of the background
   * corner_radius (int) = radius in pixels of the corners
   * border (int) = size in pixels of the border
-  * pos_x (int) = horizontal position on the screen
-  * pos_y (int) = vertical position on the screen
+  * center (1/0) = center the notification on the screen. If center is 1, the posx and posy properties are used as offsets from the center of the screen, otherwise they are used as absolute positions on the screen.  
+  * posx (int) = horizontal position on the screen
+  * posy (int) = vertical position on the screen
   * alpha (float) = opacity of the background between 0-1
   * horizontal (TRUE, FALSE) = enable or disable horizontal layout
 
