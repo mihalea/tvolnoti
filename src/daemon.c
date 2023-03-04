@@ -210,36 +210,46 @@ gboolean volume_object_notify(VolumeObject* obj,
         }
 
         if(brighticon && brighticon[0] != '\0') {
+                g_clear_object(&obj->icon_bright);
                 obj->icon_bright = gdk_pixbuf_new_from_file(brighticon, NULL);
         }
         if (singleicon && singleicon[0] != '\0') {
+                g_clear_object(&obj->icon_muted);
+                g_clear_object(&obj->icon_off);
+                g_clear_object(&obj->icon_low);
+                g_clear_object(&obj->icon_medium);
+                g_clear_object(&obj->icon_high);
                 obj->icon_muted = gdk_pixbuf_new_from_file(singleicon, NULL);
-                obj->icon_off = gdk_pixbuf_new_from_file(singleicon, NULL);
-                obj->icon_low = gdk_pixbuf_new_from_file(singleicon, NULL);
-                obj->icon_medium = gdk_pixbuf_new_from_file(singleicon, NULL);
-                obj->icon_high = gdk_pixbuf_new_from_file(singleicon, NULL);
+                obj->icon_off = obj->icon_muted;
+                obj->icon_low = obj->icon_muted;
+                obj->icon_medium = obj->icon_muted;
+                obj->icon_high = obj->icon_muted;
         }else {
 
                 if (muteicon && muteicon[0] != '\0') {
+                        g_clear_object(&obj->icon_muted);
                         obj->icon_muted = gdk_pixbuf_new_from_file(muteicon, NULL);
                 }
 
                 if (officon && officon[0] != '\0') {
+                        g_clear_object(&obj->icon_off);
                         obj->icon_off = gdk_pixbuf_new_from_file(officon, NULL);
                 }
 
                 if (lowicon && lowicon[0] != '\0') {
+                        g_clear_object(&obj->icon_low);
                         obj->icon_low = gdk_pixbuf_new_from_file(lowicon, NULL);
                 }
 
                 if (medicon && medicon[0] != '\0') {
+                        g_clear_object(&obj->icon_medium);
                         obj->icon_medium = gdk_pixbuf_new_from_file(medicon, NULL);
                 }
 
                 if (highicon && highicon[0] != '\0') {
+                        g_clear_object(&obj->icon_high);
                         obj->icon_high = gdk_pixbuf_new_from_file(highicon, NULL);
                 }
-
         }
 
         // choose icon
@@ -272,6 +282,14 @@ gboolean volume_object_notify(VolumeObject* obj,
         gtk_widget_show_all(GTK_WIDGET(obj->notification));
 
         // reset icons
+        g_clear_object(&obj->icon_muted);
+        g_clear_object(&obj->icon_high);
+        g_clear_object(&obj->icon_medium);
+        g_clear_object(&obj->icon_low);
+        g_clear_object(&obj->icon_off);
+        g_clear_object(&obj->icon_bright);
+        g_clear_object(&obj->image_progressbar_empty);
+        g_clear_object(&obj->image_progressbar_full);
         obj->icon_muted = gdk_pixbuf_new_from_file(i_muted, NULL);
         obj->icon_high = gdk_pixbuf_new_from_file(i_high, NULL);
         obj->icon_medium = gdk_pixbuf_new_from_file(i_medium, NULL);
@@ -472,35 +490,43 @@ int main(int argc, char* argv[]) {
         status->settings = settings;
 
         // volume icons
+        g_clear_object(&status->icon_high);
         status->icon_high = gdk_pixbuf_new_from_file(i_high, &error);
         if (error != NULL)
                 handle_error("Couldn't load volume_high_dark.svg.", error->message, TRUE);
 
+        g_clear_object(&status->icon_medium);
         status->icon_medium = gdk_pixbuf_new_from_file(i_medium, &error);
         if (error != NULL)
                 handle_error(concat("Couldn't load ", i_medium), error->message, TRUE);
 
+        g_clear_object(&status->icon_low);
         status->icon_low = gdk_pixbuf_new_from_file(i_low, &error);
         if (error != NULL)
                 handle_error("Couldn't load volume_low_dark.svg.", error->message, TRUE);
 
+        g_clear_object(&status->icon_off);
         status->icon_off = gdk_pixbuf_new_from_file(i_off, &error);
         if (error != NULL)
                 handle_error("Couldn't load volume_off_dark.svg.", error->message, TRUE);
 
+        g_clear_object(&status->icon_muted);
         status->icon_muted = gdk_pixbuf_new_from_file(i_muted, &error);
         if (error != NULL)
                 handle_error("Couldn't load volume_muted_dark.svg.", error->message, TRUE);
 
+        g_clear_object(&status->icon_bright);
         status->icon_bright = gdk_pixbuf_new_from_file(i_brightness, &error);
         if (error != NULL)
                 handle_error("Couldn't load display-brightness-dark.svg", error->message, TRUE);
 
         // progress bar
+        g_clear_object(&status->image_progressbar_empty);
         status->image_progressbar_empty = gdk_pixbuf_new_from_file(pb_empty, &error);
         if (error != NULL)
                 handle_error("Couldn't load progressbar_empty_dark.svg.", error->message, TRUE);
 
+        g_clear_object(&status->image_progressbar_full);
         status->image_progressbar_full = gdk_pixbuf_new_from_file(pb_full, &error);
         if (error != NULL)
                 handle_error("Couldn't load progressbar_full_dark.svg.", error->message, TRUE);
@@ -514,6 +540,7 @@ int main(int argc, char* argv[]) {
         // create pixbuf for combined image
         status->width_progressbar = gdk_pixbuf_get_width(status->image_progressbar_empty);
         status->height_progressbar = gdk_pixbuf_get_height(status->image_progressbar_empty);
+        g_clear_object(&status->image_progressbar);
         status->image_progressbar = gdk_pixbuf_new(GDK_COLORSPACE_RGB,
                                                    TRUE,
                                                    gdk_pixbuf_get_bits_per_sample(status->image_progressbar_empty),
