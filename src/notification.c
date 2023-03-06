@@ -58,9 +58,11 @@ Settings get_default_settings() {
     settings.alpha = 0.8f;
     settings.corner_radius = DEFAULT_RADIUS;
     settings.color_string = "#bda049";
-    settings.border = 0;
+    settings.border = DEFAULT_BORDER;
+    settings.border_color = "#bda049";
     settings.pos_x = -1;
     settings.pos_y = -1;
+    settings.center = 0;
     return settings;
 }
 
@@ -223,10 +225,11 @@ fill_background(GtkWidget *widget, WindowData *windata, cairo_t *cr) {
     cairo_fill_preserve (cr);
 
     if (windata->settings.border) {
-        r = (float) color.red / 65535.0;
-        g = (float) color.green / 65535.0;
-        b = (float) color.blue / 65535.0;
-        cairo_set_source_rgba (cr, 0, 0, 0, windata->settings.alpha);
+        gdk_color_parse(windata->settings.border_color, &color);
+        r = (float)color.red / 65535.0;
+        g = (float)color.green / 65535.0;
+        b = (float)color.blue / 65535.0;
+        cairo_set_source_rgba (cr, r, g, b, 0);
         cairo_set_line_width (cr, windata->settings.border);
         cairo_stroke (cr);
     }
@@ -403,6 +406,18 @@ on_window_map (GtkWidget  *widget, GdkEvent   *event, WindowData *windata) {
     return FALSE;
 }
 
+void on_size_allocate(GtkWidget *widget, GtkAllocation *allocation, WindowData *windata) {
+    Settings settings = windata->settings;
+    if (settings.center){
+        gint rwidth, rheight, depth;
+        GdkWindow *root = gtk_widget_get_root_window (GTK_WIDGET (windata->win));
+        gdk_window_get_geometry (root, NULL, NULL, &rwidth, &rheight, &depth);
+        gtk_window_move (windata->win, (rwidth - allocation->width)/2 + settings.pos_x, (rheight - allocation->height)/2 + settings.pos_y);
+    } else {
+        gtk_window_move(GTK_WINDOW(windata->win), settings.pos_x, settings.pos_y);
+    }
+}
+
 GtkWindow* create_notification(Settings settings) {
     WindowData *windata;
 
@@ -441,6 +456,10 @@ GtkWindow* create_notification(Settings settings) {
                       G_CALLBACK (on_window_realize),
                       windata);
 
+    g_signal_connect(G_OBJECT(win),
+                     "size-allocate",
+                      G_CALLBACK(on_size_allocate),
+                      windata);
     // prepare composite
     windata->composited = FALSE;
 #ifdef USE_COMPOSITE
@@ -463,12 +482,6 @@ GtkWindow* create_notification(Settings settings) {
                              GDK_WINDOW_TYPE_HINT_NOTIFICATION);
     gtk_window_set_default_size(GTK_WINDOW(win), 400, 400);
 
-    if(settings.pos_x >= 0 && settings.pos_y >= 0) {
-        gtk_window_move(GTK_WINDOW(win), settings.pos_x, settings.pos_y);
-    } else {
-        gtk_window_set_position(GTK_WINDOW(win), GTK_WIN_POS_CENTER);
-    }
-
     g_object_set_data_full (G_OBJECT (win),
                             "windata", windata,
                             (GDestroyNotify)destroy_windata);
@@ -489,7 +502,7 @@ GtkWindow* create_notification(Settings settings) {
                      windata);
     gtk_widget_show(windata->main_vbox);
     gtk_container_add(GTK_CONTAINER(win), windata->main_vbox);
-    gtk_container_set_border_width(GTK_CONTAINER(windata->main_vbox), DEFAULT_BORDER);
+    gtk_container_set_border_width(GTK_CONTAINER(windata->main_vbox), settings.border);
 
 //    windata->main_hbox = gtk_hbox_new (FALSE, 0);
 //    gtk_widget_show (windata->main_hbox);

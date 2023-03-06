@@ -29,10 +29,12 @@ typedef struct {
     gfloat alpha;
     gint corner_radius;
     gchar* color_string;
+    gchar* border_color;
     gint border;
     gint pos_x;
     gint pos_y;
     gint horizontal;
+    gboolean center;
 } Settings;
 
 Settings get_default_settings();

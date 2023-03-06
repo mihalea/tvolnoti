@@ -51,10 +51,26 @@ $ ./prepare.sh
 
 Then just follow the basic GNU routine:
 
+
 ```
 $ ./configure --prefix=/usr
 $ make
 $ sudo make install
+```
+
+If you get an error:
+
+```
+daemon.c:106:10: fatal error: value-daemon-stub.h: No such file or directory
+  106 | #include "value-daemon-stub.h"
+```
+
+then enter these commands:
+
+```
+cd src
+dbus-binding-tool --prefix=volume_object --mode=glib-client       specs.xml > value-client-stub.h
+dbus-binding-tool --prefix=volume_object --mode=glib-server       specs.xml > value-server-stub.h
 ```
 
 You can have the `.tar.gz` source archive prepared simply by calling
@@ -103,12 +119,14 @@ Configuration:
  -p <int>,<int>	--pos <int>,<int>		horizontal and vertical position
  -r <int>	    --corner-radius <int>   radius of the round corners in pixels (default 5)
  -T <string>	--theme <string>	    theme name
+ -c <path>      --config <path>         path to the configuration file
+
 ```
 
 Once the daemon is running, you can run for example the following command to show a notification for volume level 25%
 
 ```
-$ volnoti-show 25
+$ tvolnoti-show 25
 ```
 ```
 Usage: tvolnoti-show [OPTION]... value
@@ -155,8 +173,9 @@ Theme should be placed in `~/.config/tvolnoti/themes`. Each theme should have it
   * bg_color (hex color) = color of the background
   * corner_radius (int) = radius in pixels of the corners
   * border (int) = size in pixels of the border
-  * pos_x (int) = horizontal position on the screen
-  * pos_y (int) = vertical position on the screen
+  * center (boolean) = center the notification on the screen. If center value is `true`, the posx and posy properties are used as offsets from the center of the screen, otherwise they are used as absolute positions on the screen.  
+  * posx (int) = horizontal position on the screen
+  * posy (int) = vertical position on the screen
   * alpha (float) = opacity of the background between 0-1
   * horizontal (TRUE, FALSE) = enable or disable horizontal layout
 
@@ -179,7 +198,7 @@ Using a horizontal layout is possible by making use of theme files, and setting 
 For example, to display a notification with no progress bar and a custom icon. In general, you would most likely use this along with the `-m` flag as that does not take a value argument, but different icons can be specified.
 
 ```
-$ volnoti-show -n -m -0 /usr/share/pixmaps/volnoti/media-eject.svg
+$ tvolnoti-show -n -m -0 /usr/share/pixmaps/volnoti/media-eject.svg
 ```
 
 
@@ -187,7 +206,7 @@ $ volnoti-show -n -m -0 /usr/share/pixmaps/volnoti/media-eject.svg
 To control brightness, with different icons for the varying levels:
 
 ```
-$ volnoti-show -1 /usr/share/pixmaps/bright-off.png
+$ tvolnoti-show -1 /usr/share/pixmaps/bright-off.png
                 -2 /usr/share/pixmaps/bright-low.svg
                 -3 /usr/share/pixmaps/bright-med.svg
                 -4 /usr/share/pixmaps/bright-high.svg
@@ -197,7 +216,7 @@ $ volnoti-show -1 /usr/share/pixmaps/bright-off.png
 There is also the option to use a single icon for all values:
 
 ```
-$ volnoti-show -s /usr/share/pixmaps/volnoti/display-brightness-dark.svg <value>
+$ tvolnoti-show -s /usr/share/pixmaps/volnoti/display-brightness-dark.svg <value>
 ```
 
 
