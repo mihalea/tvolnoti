@@ -73,6 +73,7 @@ GType volume_object_get_type(void);
 gboolean volume_object_notify(VolumeObject* obj,
                               gint value_in,
                               gint nobar_in,
+                              gint all_notifications_same_width_in,
                               gint brightness_in,
                               const gchar* muteicon_in,
                               const gchar* officon_in,
@@ -179,6 +180,7 @@ static gboolean time_handler(VolumeObject *obj)
 gboolean volume_object_notify(VolumeObject* obj,
                               gint value,
                               gint nobarvalue,
+                              gint all_notifications_same_width,
                               gint brightness,
                               const gchar* muteicon,
                               const gchar* officon,
@@ -276,6 +278,9 @@ gboolean volume_object_notify(VolumeObject* obj,
                                 obj->image_progressbar, width_full, 0);
                 set_progressbar_image(GTK_WINDOW(obj->notification), obj->image_progressbar);
                 print_debug_ok(obj->debug);
+        } else if (all_notifications_same_width) {
+                gint width_full = obj->width_progressbar;
+                set_progressbar_image(GTK_WINDOW(obj->notification), obj->image_progressbar);
         }
 
         obj->time_left = obj->timeout;

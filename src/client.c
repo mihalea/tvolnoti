@@ -67,7 +67,8 @@ int main(int argc, const char* argv[]) {
             gopt_option('4', GOPT_ARG, gopt_shorts('4'), gopt_longs("high-icon")),
             gopt_option('s', GOPT_ARG, gopt_shorts('s'), gopt_longs("single-icon")),
             gopt_option('x', GOPT_ARG, gopt_shorts('x'), gopt_longs("bright-icon")),
-            gopt_option('v', GOPT_REPEAT, gopt_shorts('v'), gopt_longs("verbose"))));
+            gopt_option('v', GOPT_REPEAT, gopt_shorts('v'), gopt_longs("verbose")),
+            gopt_option('w', 0, gopt_shorts('w'), gopt_longs("same-width"))));
     const gchar* muteicon;
     const gchar* officon;
     const gchar* lowicon;
@@ -79,6 +80,7 @@ int main(int argc, const char* argv[]) {
     int debug = gopt(options, 'v');
     int muted = gopt(options, 'm');
     int nopr = gopt(options, 'n');
+    int same_width = gopt(options, 'w');
     int bright = gopt(options, 'b');
     int micon = gopt_arg(options, '0', &muteicon);
     int oicon = gopt_arg(options, '1', &officon);
@@ -163,7 +165,7 @@ int main(int argc, const char* argv[]) {
     print_debug_ok(debug);
 
     print_debug("Sending volume...", debug);
-    uk_ac_cam_db538_VolumeNotification_notify(proxy, volume, nobar, bright, muteicon, officon, lowicon, medicon, highicon, singleicon, brighticon, &error);
+    uk_ac_cam_db538_VolumeNotification_notify(proxy, volume, nobar, same_width, bright, muteicon, officon, lowicon, medicon, highicon, singleicon, brighticon, &error);
     if (error !=  NULL) {
         handle_error("Failed to send notification", error->message, FALSE);
         g_clear_error(&error);
