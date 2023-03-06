@@ -5,7 +5,7 @@
 
 ![tvolnoti-preview](img/montage.png)
 
-Compared to the original tvolnoti, this fork adds some additional features such as theme support.
+Compared to the original volnoti, this fork adds some additional features such as theme support.
 
 
 ## Distribution packages
@@ -173,7 +173,7 @@ Theme should be placed in `~/.config/tvolnoti/themes`. Each theme should have it
   * bg_color (hex color) = color of the background
   * corner_radius (int) = radius in pixels of the corners
   * border (int) = size in pixels of the border
-  * center (1/0) = center the notification on the screen. If center is 1, the posx and posy properties are used as offsets from the center of the screen, otherwise they are used as absolute positions on the screen.  
+  * center (boolean) = center the notification on the screen. If center value is `true`, the posx and posy properties are used as offsets from the center of the screen, otherwise they are used as absolute positions on the screen.  
   * posx (int) = horizontal position on the screen
   * posy (int) = vertical position on the screen
   * alpha (float) = opacity of the background between 0-1

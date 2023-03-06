@@ -587,7 +587,7 @@ void set_settings(Settings* settings, gchar* theme_dir, int* timeout) {
 
         gint corner_radius;
         gint border;
-        gint center;
+        gboolean center;
         gdouble alpha;
         gint pos_x;
         gint pos_y;
@@ -640,7 +640,7 @@ void set_settings(Settings* settings, gchar* theme_dir, int* timeout) {
                 settings->border_color = border_color;
         }
 
-        if(center = g_key_file_get_integer(gkf, "Style", "center", NULL)) {
+        if(center = g_key_file_get_boolean(gkf, "Style", "center", NULL)) {
                 settings->center = center;
         } 
         

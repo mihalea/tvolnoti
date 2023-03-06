@@ -225,11 +225,10 @@ fill_background(GtkWidget *widget, WindowData *windata, cairo_t *cr) {
     cairo_fill_preserve (cr);
 
     if (windata->settings.border) {
-        GdkColor color1;
-        gdk_color_parse(windata->settings.border_color, &color1);
-        r = (float)color1.red / 65535.0;
-        g = (float)color1.green / 65535.0;
-        b = (float)color1.blue / 65535.0;
+        gdk_color_parse(windata->settings.border_color, &color);
+        r = (float)color.red / 65535.0;
+        g = (float)color.green / 65535.0;
+        b = (float)color.blue / 65535.0;
         cairo_set_source_rgba (cr, r, g, b, 0);
         cairo_set_line_width (cr, windata->settings.border);
         cairo_stroke (cr);
@@ -409,17 +408,13 @@ on_window_map (GtkWidget  *widget, GdkEvent   *event, WindowData *windata) {
 
 void on_size_allocate(GtkWidget *widget, GtkAllocation *allocation, WindowData *windata) {
     Settings settings = windata->settings;
-    if(settings.pos_x > 0 || settings.pos_y > 0) {
-        if (settings.center){
-            gint rwidth, rheight, depth;
-            GdkWindow *root = gtk_widget_get_root_window (GTK_WIDGET (windata->win));
-            gdk_window_get_geometry (root, NULL, NULL, &rwidth, &rheight, &depth);
-            gtk_window_move (windata->win, (rwidth - allocation->width)/2 + settings.pos_x, (rheight - allocation->height)/2 + settings.pos_y);
-        } else {
-            gtk_window_move(GTK_WINDOW(windata->win), settings.pos_x, settings.pos_y);
-        }
+    if (settings.center){
+        gint rwidth, rheight, depth;
+        GdkWindow *root = gtk_widget_get_root_window (GTK_WIDGET (windata->win));
+        gdk_window_get_geometry (root, NULL, NULL, &rwidth, &rheight, &depth);
+        gtk_window_move (windata->win, (rwidth - allocation->width)/2 + settings.pos_x, (rheight - allocation->height)/2 + settings.pos_y);
     } else {
-        gtk_window_set_position(GTK_WINDOW(windata->win), GTK_WIN_POS_CENTER);
+        gtk_window_move(GTK_WINDOW(windata->win), settings.pos_x, settings.pos_y);
     }
 }
 
