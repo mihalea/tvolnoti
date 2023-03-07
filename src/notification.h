@@ -35,6 +35,8 @@ typedef struct {
     gint pos_y;
     gint horizontal;
     gboolean center;
+    gboolean same_width;
+    gint nobar;
 } Settings;
 
 Settings get_default_settings();

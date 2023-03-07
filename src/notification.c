@@ -63,6 +63,8 @@ Settings get_default_settings() {
     settings.pos_x = -1;
     settings.pos_y = -1;
     settings.center = 0;
+    settings.same_width = 0;
+    settings.nobar =  0;
     return settings;
 }
 
@@ -516,6 +518,8 @@ GtkWindow* create_notification(Settings settings) {
 
     if(settings.horizontal) {
         gtk_alignment_set_padding (GTK_ALIGNMENT (windata->iconbox), 0, 0, 0, 0);
+    } else if(settings.nobar && settings.same_width) {
+        gtk_alignment_set_padding (GTK_ALIGNMENT (windata->iconbox), IMAGE_PADDING/2, IMAGE_PADDING/2, 0, 0);
     } else {
         gtk_alignment_set_padding (GTK_ALIGNMENT (windata->iconbox), 0, IMAGE_PADDING, 0, 0);
     }

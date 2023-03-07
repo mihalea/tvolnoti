@@ -201,7 +201,8 @@ gboolean volume_object_notify(VolumeObject* obj,
         }
 
         obj->brightness = brightness;
-
+        obj->settings.same_width = same_width;
+        obj->settings.nobar = nobarvalue;
 
         if (obj->notification == NULL) {
                 print_debug("Creating new notification...", obj->debug);
