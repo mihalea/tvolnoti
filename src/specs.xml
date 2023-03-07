@@ -5,6 +5,7 @@
     <method name="notify">
       <arg type="i" name="volume" direction="in" />
       <arg type="i" name="nobar" direction="in" />
+      <arg type="i" name="same_width" direction="in" />
       <arg type="i" name="bright" direction="in" />
       <arg type="s" name="muteicon" direction="in" />
       <arg type="s" name="officon" direction="in" />
